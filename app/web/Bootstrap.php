@@ -86,7 +86,7 @@ class Bootstrap
     private function invokeAction(string $controllerClassName, string $actionMethodName, array $request = []) : void
     {
         $servicesContainer = new Container($this->config);
-        $modelsContainer = new \app\models\Container($servicesContainer);
+        $modelsContainer = new \app\models\Container($this->config, $servicesContainer);
 
         /** @var AbstractController $controller */
         $controller = new $controllerClassName($this->config, $servicesContainer, $modelsContainer, $request);

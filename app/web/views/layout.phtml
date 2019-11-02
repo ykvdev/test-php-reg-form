@@ -1,3 +1,8 @@
+<?php
+
+/** @var $title string */
+
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -12,6 +17,7 @@
 <body>
 <div class="container min-vh-100">
     <div class="row h-100 justify-content-center align-items-center">
+        <?php $this->insert('flashes') ?>
         <?= $this->section('content') ?>
     </div>
 </div>

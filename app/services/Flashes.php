@@ -4,8 +4,8 @@ namespace app\services;
 
 class Flashes
 {
-    private const INFO = 'info';
-    private const ERROR = 'error';
+    public const INFO = 'success';
+    public const ERROR = 'danger';
 
     public function addInfo(string $msg) : void
     {

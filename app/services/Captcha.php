@@ -32,8 +32,8 @@ class Captcha
         $this->builder->output();
     }
 
-    public function getPrevPhrase()
+    public function validate(string $phrase) : bool
     {
-        return $_SESSION[$this->config['session_name']];
+        return strcasecmp($_SESSION[$this->config['session_name']], $phrase) === 0;
     }
 }

@@ -1,0 +1,8 @@
+<?php use app\services\Flashes;
+foreach ([Flashes::INFO, Flashes::ERROR] as $msgType): ?>
+    <?php if(isset($_SESSION[$msgType])):
+        $msg = $_SESSION[$msgType];
+        unset($_SESSION[$msgType]); ?>
+        <div class="alert alert-<?= $msgType ?>" role="alert"><?= $this->e($msg) ?></div>
+    <?php endif ?>
+<?php endforeach ?>

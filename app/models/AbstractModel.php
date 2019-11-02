@@ -13,14 +13,21 @@ class AbstractModel
     /** @var string */
     public $pkName;
 
+    /** @var array */
+    public $fields;
+
+    /** @var array */
+    protected $config;
+
     /** @var \app\services\Container */
     protected $services;
 
     /** @var EasyDB */
     protected $db;
 
-    public function __construct(\app\services\Container $services)
+    public function __construct(array $config, \app\services\Container $services)
     {
+        $this->config = $config;
         $this->services = $services;
         $this->db = $services->db();
     }
@@ -96,7 +103,7 @@ class AbstractModel
      */
     protected function insert(array $data) : string
     {
-        $this->db->insert($this->tableName, $data);
+        $this->db->insert($this->tableName, $this->filterFieldsList($data));
 
         return $this->db->lastInsertId();
     }
@@ -112,7 +119,7 @@ class AbstractModel
     protected function update(array $changes, $conditions) : int
     {
         $conditions = is_array($conditions) ? $conditions : [$this->pkName => $conditions];
-        $result = $this->db->update($this->tableName, $changes, $conditions);
+        $result = $this->db->update($this->tableName, $this->filterFieldsList($changes), $conditions);
 
         return $result;
     }
@@ -128,5 +135,10 @@ class AbstractModel
     {
         return $this->db->delete($this->tableName,
             is_array($conditions) ? $conditions : [$this->pkName => $conditions]);
+    }
+
+    private function filterFieldsList(array $data) : array
+    {
+        return array_intersect_key($data, array_flip($this->fields));
     }
 }

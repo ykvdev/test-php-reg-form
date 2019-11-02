@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'base_url' => 'http://192.168.56.2:8000',
+
     'sqlite_db_file' => __DIR__ . '/../../data/sii_test_task.sqlite3',
 
     'view_renderer' => [
@@ -27,6 +29,7 @@ return [
     'routes_cache_file' => __DIR__ . '/../../data/routes.cache',
     'routes' => [
         [['GET', 'POST'], '/', \app\web\controllers\UserController::class, 'registerAction'],
+        [['GET', 'POST'], '/login', \app\web\controllers\UserController::class, 'loginAction'],
         ['GET', '/captcha', \app\web\controllers\UserController::class, 'captchaAction'],
     ],
 ];
