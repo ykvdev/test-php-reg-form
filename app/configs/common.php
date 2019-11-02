@@ -29,6 +29,8 @@ return [
     'routes_cache_file' => __DIR__ . '/../../data/routes.cache',
     'routes' => [
         [['GET', 'POST'], '/', \app\web\controllers\UserController::class, 'registerAction'],
+        ['GET', '/confirm-email/{email}/{token}', \app\web\controllers\UserController::class, 'confirmEmailAction'],
+        ['GET', '/profile', \app\web\controllers\UserController::class, 'profileAction'],
         [['GET', 'POST'], '/login', \app\web\controllers\UserController::class, 'loginAction'],
         ['GET', '/captcha', \app\web\controllers\UserController::class, 'captchaAction'],
     ],

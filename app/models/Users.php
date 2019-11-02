@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use ParagonIE\AntiCSRF\AntiCSRF;
 use Respect\Validation\Validator;
 
 class Users extends AbstractModel
@@ -15,25 +14,6 @@ class Users extends AbstractModel
 
     public $fields = ['id', 'login', 'email', 'password', 'full_name', 'registered_at', 'email_confirmed_at',
         'last_auth_at', 'email_confirm_token', 'email_token_sent_at'];
-
-    public function validate(array $data) : array
-    {
-        $errors = [];
-        if($error = $this->validateLogin($data['login'])) {
-            $errors['login'] = $error;
-        }
-        if($error = $this->validateEmail($data['email'])) {
-            $errors['email'] = $error;
-        }
-        if($error = $this->validatePassword($data['password'])) {
-            $errors['password'] = $error;
-        }
-        if($error = $this->validateFullName($data['full_name'])) {
-            $errors['full_name'] = $error;
-        }
-
-        return $errors;
-    }
 
     public function register(array $validatedData) : void
     {
@@ -49,6 +29,18 @@ class Users extends AbstractModel
         );
     }
 
+    public function activate(string $email) : void
+    {
+        $this->update(['email_confirmed_at' => date('Y-m-d H:i:s')], ['email' => $email]);
+    }
+
+    public function login(string $loginOrEmail) : void
+    {
+        $_SESSION[static::SESSION_NAME] =
+            $this->getRow(['login' => $loginOrEmail])
+            ?? $this->getRow(['email' => $loginOrEmail]);
+    }
+
     public function getAuthorised() : ?array
     {
         return $_SESSION[static::SESSION_NAME] ?? null;
@@ -59,14 +51,12 @@ class Users extends AbstractModel
         return session_destroy();
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-
-    private function passwordHash(string $plainPassword) : string
+    public function passwordHash(string $plainPassword) : string
     {
         return password_hash($plainPassword, PASSWORD_DEFAULT);
     }
 
-    private function passwordVerify(string $plainPassword, string $hashedPassword) : bool
+    public function passwordVerify(string $plainPassword, string $hashedPassword) : bool
     {
         return password_verify($plainPassword, $hashedPassword);
     }
@@ -77,12 +67,25 @@ class Users extends AbstractModel
             . '/confirm-email/' . urlencode($email) . '/' . md5($email . $registeredAt);
     }
 
-    private function validateEmailConfirmToken(string $token, string $email, string $registeredAt) : bool
+    public function validateEmailConfirmToken(?string $token, ?string $email) : ?string
     {
-        return strcmp(md5($email . $registeredAt), $token) === 0;
+        if($error = $this->validateEmail($email ?? null, true)) {
+            return $error;
+        }
+
+        $user = $this->getRow(['email' => $email], ['registered_at', 'email_confirmed_at']);
+        if($user['email_confirmed_at']) {
+            return 'This e-mail already confirmed';
+        }
+
+        if(strcmp(md5($email . $user['registered_at']), $token) !== 0) {
+            return 'E-mail confirmation token incorrect';
+        }
+
+        return null;
     }
 
-    private function validateLogin(string $login) : ?string
+    public function validateLogin(?string $login, bool $mustExists = false) : ?string
     {
         $error = null;
 
@@ -95,14 +98,19 @@ class Users extends AbstractModel
             $error = 'Login may contains numbers, latin letters, and symbols: . -';
         } elseif (!Validator::length(3, 20)->validate($login)) {
             $error = 'Login length wrong, min: 3, max: 20 symbols';
-        } elseif($this->isExists(['login' => $login])) {
+        }
+
+        $exists = $this->isExists(['login' => $login]);
+        if(!$mustExists && $exists) {
             $error = 'Login already exists';
+        } elseif($mustExists && !$exists) {
+            $error = 'Login not exists';
         }
 
         return $error;
     }
 
-    private function validateEmail(string $email) : ?string
+    public function validateEmail(?string $email, bool $mustExists = false) : ?string
     {
         $error = null;
 
@@ -113,14 +121,19 @@ class Users extends AbstractModel
             $error = 'E-mail format is incorrect';
         } elseif (!Validator::length(null, 100)->validate($email)) {
             $error = 'E-mail length wrong, max: 100 symbols';
-        } elseif($this->isExists(['email' => $email])) {
+        }
+
+        $exists = $this->isExists(['email' => $email]);
+        if(!$mustExists && $exists) {
             $error = 'E-mail already exists';
+        } elseif($mustExists && !$exists) {
+            $error = 'E-mail not exists';
         }
 
         return $error;
     }
 
-    private function validatePassword(string $password) : ?string
+    public function validatePassword(?string $password) : ?string
     {
         $error = null;
 
@@ -134,7 +147,7 @@ class Users extends AbstractModel
         return $error;
     }
 
-    private function validateFullName(string $fullName) : ?string
+    public function validateFullName(?string $fullName) : ?string
     {
         $error = null;
 
