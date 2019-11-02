@@ -6,7 +6,6 @@ return [
     'view_renderer' => [
         'views_dir' => __DIR__ . '/../web/views',
         'views_ext' => 'phtml',
-        'assets_dir' => __DIR__ . '/../../public/assets',
     ],
 
     'mailer' => [
@@ -19,6 +18,6 @@ return [
 
     'routes_cache_file' => __DIR__ . '/../../data/routes.cache',
     'routes' => [
-        [['GET', 'POST'], '/', \app\web\controllers\IndexController::class, 'indexAction'],
+        [['GET', 'POST'], '/', \app\web\controllers\UserController::class, 'registerAction'],
     ],
 ];

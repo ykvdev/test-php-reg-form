@@ -15,7 +15,6 @@ class ViewRenderer
     public function __construct(array $viewRendererConfig)
     {
         $this->renderer = new Engine($viewRendererConfig['views_dir'], $viewRendererConfig['views_ext']);
-        $this->renderer->loadExtension(new Asset($viewRendererConfig['assets_dir'], true));
         $this->renderer->loadExtension(new URI($_SERVER['PATH_INFO'] ?? null));
         $this->renderer->registerFunction('csrf', function(string $formActionUrl) {
             return (new AntiCSRF())->insertToken($formActionUrl, false);

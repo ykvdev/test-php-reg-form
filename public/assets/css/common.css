@@ -1,0 +1,18 @@
+html, body {
+    height: 100%;
+}
+
+.container, .row {
+    height: 100%;
+    min-height: 100%;
+}
+
+.registration .card {
+    width: 500px;
+}
+.registration .card .card-body {
+    padding-bottom: 0;
+}
+.registration .captcha {
+    height: 40px;
+}

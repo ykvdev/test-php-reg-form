@@ -1,0 +1,83 @@
+<?php $this->layout('layout', ['title' => 'Registration']) ?>
+
+<form method="post" action="/" class="registration" autocomplete="off">
+    <?= $this->csrf('/') ?>
+    <div class="card">
+        <h5 class="card-header">Registration</h5>
+        <div class="card-body">
+                <div class="form-group row">
+                    <label for="login" class="col-md-4 col-form-label">Login</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control is-invalid" id="login" name="login" required>
+                        <div class="invalid-feedback">
+                            Please provide a valid login
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="email" class="col-md-4 col-form-label">E-mail</label>
+                    <div class="col-md-8">
+                        <input type="email" class="form-control is-valid" id="email" name="email" required>
+                        <div class="valid-feedback">
+                            E-mail is correct
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="password" class="col-md-4 col-form-label">Password</label>
+                    <div class="col-md-8">
+                        <input type="password" class="form-control is-valid" id="password" name="password" required>
+                        <div class="valid-feedback">
+                            ...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="repassword" class="col-md-4 col-form-label">Repeat Password</label>
+                    <div class="col-md-8">
+                        <input type="password" class="form-control is-valid" id="repassword" name="repassword" required>
+                        <div class="valid-feedback">
+                            ...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="full_name" class="col-md-4 col-form-label">Full Name</label>
+                    <div class="col-md-8">
+                        <input type="text" class="form-control is-valid" id="full_name" name="full_name" required>
+                        <div class="valid-feedback">
+                            ...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="captcha" class="col-md-4 col-form-label">Enter Captcha</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control is-valid" id="captcha" name="captcha" required>
+                        <div class="valid-feedback">
+                            ...
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="/assets/img/captcha.jpg" class="captcha" alt="Captcha image">
+                        <small class="form-text text-muted"><a href="#">Refresh</a></small>
+                    </div>
+                </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+                <div class="col-md-8 pt-2">
+                    <a href="#">If you already registered go to login form</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
