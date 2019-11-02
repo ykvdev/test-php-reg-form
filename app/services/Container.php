@@ -68,4 +68,13 @@ class Container
 
         return $this->servicesObjects['mailer'];
     }
+
+    public function captcha() : Captcha
+    {
+        if (!isset($this->servicesObjects['captcha'])) {
+            $this->servicesObjects['captcha'] = new Captcha($this->config['captcha']);
+        }
+
+        return $this->servicesObjects['captcha'];
+    }
 }

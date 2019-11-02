@@ -22,7 +22,7 @@ class Bootstrap
     {
         $this->config = $config;
 
-        if(CUR_ENV == ENV_DEV) {
+        if(APP_ENV == ENV_DEV) {
             $whoops = new Run();
             $whoops->prependHandler(new PrettyPageHandler());
             $whoops->register();
@@ -38,7 +38,7 @@ class Bootstrap
                 }
             }, [
                 'cacheFile' => $this->config['routes_cache_file'],
-                'cacheDisabled' => CUR_ENV == ENV_DEV,
+                'cacheDisabled' => APP_ENV == ENV_DEV,
             ]);
 
             $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $this->prepareUri());
@@ -59,7 +59,7 @@ class Bootstrap
                     break;
             }
         } catch (\Throwable $e) {
-            if(CUR_ENV == ENV_DEV) {
+            if(APP_ENV == ENV_DEV) {
                 throw $e;
             } else {
                 $this->invokeAction(PagesController::class, 'error500Action');

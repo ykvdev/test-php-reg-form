@@ -45,6 +45,10 @@ if($_POST && (new AntiCSRF())->validateRequest()) {
 
 https://respect-validation.readthedocs.io/en/1.1/concrete-api/
 
+# Captcha
+
+https://github.com/Gregwar/Captcha
+
 # Plates
 
 http://platesphp.com/v3/

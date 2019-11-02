@@ -10,13 +10,8 @@ class Users extends AbstractModel
 
     public $pkName = 'id';
 
-    public function login(string $login, string $password) : bool
+    public function register(array $formData) : array
     {
-        // get user data from DB
-        // check pw
-        // if pw wrong return false
-        // put user data to session
-        // return true
-        // ...
+
     }
 }

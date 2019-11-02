@@ -16,8 +16,17 @@ return [
         'smtp_secure' => 'ssl',
     ],
 
+    'captcha' => [
+        'session_name' => 'captcha',
+        'dev_phrase' => '555',
+        'length' => 5,
+        'width' => 131,
+        'height' => 38
+    ],
+
     'routes_cache_file' => __DIR__ . '/../../data/routes.cache',
     'routes' => [
         [['GET', 'POST'], '/', \app\web\controllers\UserController::class, 'registerAction'],
+        ['GET', '/captcha', \app\web\controllers\UserController::class, 'captchaAction'],
     ],
 ];
