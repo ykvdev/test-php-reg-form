@@ -22,7 +22,7 @@ if(APP_ENV == ENV_DEV && in_array($_SERVER['REQUEST_URI'], [
     exit;
 }
 
-$config = array_merge_recursive(
+$config = array_replace(
     require __DIR__ . '/../app/configs/common.php',
     require __DIR__ . '/../app/configs/envs/' . APP_ENV . '.php'
 );

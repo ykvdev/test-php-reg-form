@@ -38,8 +38,8 @@ return [
         [['GET', 'POST'], '/login', UserController::class, 'login', Users::ROLE_GUEST],
 
         ['GET', '/profile', UserController::class, 'profile', Users::ROLE_USER],
-        ['GET', '/profile-edit', UserController::class, 'profileEdit', Users::ROLE_USER],
-        ['GET', '/password-change', UserController::class, 'passwordChange', Users::ROLE_USER],
+        [['GET', 'POST'], '/profile-edit', UserController::class, 'profileEdit', Users::ROLE_USER],
+        [['GET', 'POST'], '/password-change', UserController::class, 'passwordChange', Users::ROLE_USER],
         ['GET', '/logout', UserController::class, 'logout', Users::ROLE_USER],
 
         ['GET', '/captcha', UserController::class, 'captcha', Users::ROLE_ALL],

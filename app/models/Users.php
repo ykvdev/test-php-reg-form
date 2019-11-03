@@ -24,9 +24,33 @@ class Users extends AbstractModel
         $_SESSION[self::SESSION_NAME] = $user;
     }
 
-    public function getAuthorised() : ?array
+    /**
+     * @param string|null $field
+     *
+     * @return mixed|null
+     */
+    public function getAuthorised(string $field = null)
     {
-        return $_SESSION[self::SESSION_NAME] ?? null;
+        $data = $_SESSION[self::SESSION_NAME] ?? null;
+        $data = $data ? ($field && isset($data[$field]) ? $data[$field] : $data) : null;
+
+        return $data;
+    }
+
+    /**
+     * @param array $changes
+     *
+     * @throws \RuntimeException
+     *
+     * @return void
+     */
+    public function updateAuthorised(array $changes) : void
+    {
+        if($this->getAuthorised()) {
+            $_SESSION[self::SESSION_NAME] = array_replace($_SESSION[self::SESSION_NAME], $changes);
+        } else {
+            throw new \RuntimeException('User not authorized');
+        }
     }
 
     public function logout() : bool
@@ -99,7 +123,7 @@ class Users extends AbstractModel
         $fullName = trim($fullName);
         if(!$fullName) {
             $error = 'Full name is required';
-        } elseif(!Validator::regex('/[a-zа-я\' ]/i')->validate($fullName)) {
+        } elseif(Validator::regex('/[^a-zа-я\' ]/i')->validate($fullName)) {
             $error = 'Full name may contains letters and symbol: \'';
         } elseif (!Validator::length(3, 100)->validate($fullName)) {
             $error = 'Full name length wrong, min: 3, max: 100 symbols';

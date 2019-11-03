@@ -137,7 +137,7 @@ class AbstractModel
             is_array($conditions) ? $conditions : [$this->dbPk => $conditions]);
     }
 
-    private function filterFieldsList(array $data) : array
+    protected function filterFieldsList(array $data) : array
     {
         return array_intersect_key($data, array_flip($this->dbFields));
     }

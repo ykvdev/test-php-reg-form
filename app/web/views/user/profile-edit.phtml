@@ -1,1 +1,42 @@
-Profile edit action...
+<?php
+
+/** @var $data array */
+/** @var $errors array */
+
+$this->layout('layout', ['title' => 'Profile Edit']);
+
+$formFields = [
+    'full_name' => ['Full Name', 'full_name', 'Full name is correct'],
+];
+?>
+<form method="post" action="/profile-edit" class="registration" autocomplete="off">
+    <?= $this->csrf('/profile-edit') ?>
+    <div class="card">
+        <div class="card-header">
+            <?php $this->insert('user/profile/nav', ['current' => 'profile-edit']) ?>
+        </div>
+        <div class="card-body">
+            <?php foreach ($formFields as $alias => $parts):
+                [$label, $type, $correctMsg] = $parts ?>
+                <div class="form-group row">
+                    <label for="<?= $alias ?>" class="col-md-4 col-form-label"><?= $label ?></label>
+                    <div class="col-md-8">
+                        <input type="<?= $type ?>" id="<?= $alias ?>" name="<?= $alias ?>" required
+                               value="<?= $this->e($data[$alias] ?? '') ?>"
+                               class="form-control <?= isset($errors[$alias]) ? 'is-invalid' : '' ?>">
+                        <div class="<?= isset($errors[$alias]) ? 'invalid-feedback' : 'valid-feedback' ?>">
+                            <?= $this->e($errors[$alias] ?? $correctMsg) ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach ?>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" name="save" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

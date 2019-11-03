@@ -43,7 +43,14 @@ class UserController extends AbstractController
 
     public function profileEditAction() : void
     {
-        $this->renderView('user/profile-edit');
+        if(isset($_POST['save']) && !($errors = $this->models->usersProfileEdit->exec($_POST))) {
+            $this->redirect('/profile');
+        }
+
+        $this->renderView('user/profile-edit', [
+            'data' => array_replace($this->models->users->getAuthorised(), $_POST),
+            'errors' => $errors ?? []
+        ]);
     }
 
     public function passwordChangeAction() : void

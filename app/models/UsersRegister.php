@@ -61,7 +61,7 @@ class UsersRegister extends Users
             $this->errors['captcha'] = 'Captcha is not match';
         }
 
-        return !empty($this->errors);
+        return empty($this->errors);
     }
     
     private function save() : void
