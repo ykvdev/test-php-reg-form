@@ -8,6 +8,6 @@ html, body {
     min-height: 100%;
 }
 
-.card .card-body {
+form .card .card-body {
     padding-bottom: 0;
 }

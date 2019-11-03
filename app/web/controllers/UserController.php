@@ -3,7 +3,6 @@
 namespace app\web\controllers;
 
 use app\models\Users;
-use http\Client\Curl\User;
 
 class UserController extends AbstractController
 {
@@ -39,7 +38,7 @@ class UserController extends AbstractController
 
     public function profileAction() : void
     {
-        $this->renderView('user/profile');
+        $this->renderView('user/profile', ['user' => $this->models->users->getAuthorised()]);
     }
 
     public function profileEditAction() : void

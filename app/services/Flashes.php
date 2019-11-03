@@ -9,18 +9,18 @@ class Flashes
 
     public function addInfo(string $msg) : void
     {
-        $_SESSION[static::INFO] = $msg;
+        $_SESSION[self::INFO] = $msg;
     }
 
     public function addError(string $msg) : void
     {
-        $_SESSION[static::ERROR] = $msg;
+        $_SESSION[self::ERROR] = $msg;
     }
 
     public function getList() : array
     {
         $messages = [];
-        foreach ([static::INFO, static::ERROR] as $type) {
+        foreach ([self::INFO, self::ERROR] as $type) {
             if(isset($type)) {
                 $messages[$type] = $_SESSION[$type];
                 unset($_SESSION[$type]);

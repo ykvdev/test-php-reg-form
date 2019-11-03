@@ -21,12 +21,12 @@ class Users extends AbstractModel
         $user['last_auth_at'] = date('Y-m-d H:i:s');
         $this->update(['last_auth_at' => $user['last_auth_at']], $user['id']);
 
-        $_SESSION[static::SESSION_NAME] = $user;
+        $_SESSION[self::SESSION_NAME] = $user;
     }
 
     public function getAuthorised() : ?array
     {
-        return $_SESSION[static::SESSION_NAME] ?? null;
+        return $_SESSION[self::SESSION_NAME] ?? null;
     }
 
     public function logout() : bool

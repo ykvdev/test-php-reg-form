@@ -44,7 +44,9 @@ class UsersLogin extends Users
         }
 
         if(!$this->user['email_confirmed_at']) {
-            $this->errors['identity'] = 'E-mail is not confirmed';
+            $this->errors['identity'] = 'Your e-mail'
+                . ($isIdentityLogin ? ' ' . $this->user['email'] : '')
+                . ' is not confirmed';
             return false;
         }
 
