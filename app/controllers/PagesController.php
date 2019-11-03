@@ -6,7 +6,7 @@ class PagesController extends AbstractController
 {
     protected function indexAction() : void
     {
-        $this->renderView('pages/' . $this->request['view']);
+        $this->renderView('pages/' . $this->get['view']);
     }
 
     protected function error404Action() : void

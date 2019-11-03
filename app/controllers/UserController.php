@@ -8,17 +8,17 @@ class UserController extends AbstractController
 {
     protected function registerAction() : void
     {
-        if(isset($_POST['register']) && !($errors = $this->models->usersRegister->exec($_POST))) {
+        if(isset($this->post['register']) && !($errors = $this->models->usersRegister->exec($this->post))) {
             $this->services->flashes->addInfo('Your registration is success. Check your E-mail for confirmation.');
             $this->goBack();
         }
 
-        $this->renderView('user/register', ['data' => $_POST, 'errors' => $errors ?? []]);
+        $this->renderView('user/register', ['data' => $this->post, 'errors' => $errors ?? []]);
     }
 
     protected function confirmEmailAction()
     {
-        if($error = $this->models->usersConfirmEmail->exec($this->request)) {
+        if($error = $this->models->usersConfirmEmail->exec($this->get)) {
             $this->services->flashes->addError($error);
             $this->redirect($this->config['routes_for_roles'][Users::ROLE_GUEST]);
         } else {
@@ -29,12 +29,12 @@ class UserController extends AbstractController
 
     protected function loginAction() : void
     {
-        if(isset($_POST['login']) && !($errors = $this->models->usersLogin->exec($_POST))) {
+        if(isset($this->post['login']) && !($errors = $this->models->usersLogin->exec($this->post))) {
             $this->redirect($this->config['routes_for_roles'][Users::ROLE_USER]);
         }
 
         $this->renderView('user/login', [
-            'data' => $_POST,
+            'data' => $this->post,
             'errors' => $errors ?? [],
             'is_need_captcha' => $this->models->usersLogin->isNeedCaptcha()
         ]);
@@ -42,28 +42,28 @@ class UserController extends AbstractController
 
     protected function passwordRestoreRequestAction() : void
     {
-        if(isset($_POST['restore']) && !($errors = $this->models->usersPasswordRestoreRequest->exec($_POST))) {
+        if(isset($this->post['restore']) && !($errors = $this->models->usersPasswordRestoreRequest->exec($this->post))) {
             $this->services->flashes->addInfo('Check your E-mail for password restore link.');
             $this->goBack();
         }
 
-        $this->renderView('user/password-restore-request', ['data' => $_POST, 'errors' => $errors ?? []]);
+        $this->renderView('user/password-restore-request', ['data' => $this->post, 'errors' => $errors ?? []]);
     }
 
     protected function passwordRestoreAction() : void
     {
-        if($error = $this->models->usersPasswordRestore->validateToken($this->request)) {
+        if($error = $this->models->usersPasswordRestore->validateToken($this->get)) {
             $this->services->flashes->addError($error);
             $this->redirect($this->config['routes_for_roles'][Users::ROLE_GUEST]);
-        } elseif(isset($_POST['restore']) && !($errors = $this->models->usersPasswordRestore->exec($_POST))) {
+        } elseif(isset($this->post['restore']) && !($errors = $this->models->usersPasswordRestore->exec($this->post))) {
             $this->services->flashes->addInfo('Your new password has been success saved');
             $this->redirect($this->config['routes_for_roles'][Users::ROLE_USER]);
         }
 
         $this->renderView('user/password-restore', [
-            'data' => $_POST,
+            'data' => $this->post,
             'errors' => $errors ?? [],
-            'token' => $this->request['token'] ?? null
+            'token' => $this->get['token'] ?? null
         ]);
     }
 
@@ -74,24 +74,24 @@ class UserController extends AbstractController
 
     protected function profileEditAction() : void
     {
-        if(isset($_POST['save']) && !($errors = $this->models->usersProfileEdit->exec($_POST))) {
+        if(isset($this->post['save']) && !($errors = $this->models->usersProfileEdit->exec($this->post))) {
             $this->redirect('/profile');
         }
 
         $this->renderView('user/profile-edit', [
-            'data' => array_replace($this->models->users->getAuthorised(), $_POST),
+            'data' => array_replace($this->models->users->getAuthorised(), $this->post),
             'errors' => $errors ?? []
         ]);
     }
 
     protected function passwordChangeAction() : void
     {
-        if(isset($_POST['save']) && !($errors = $this->models->usersPasswordChange->exec($_POST))) {
+        if(isset($this->post['save']) && !($errors = $this->models->usersPasswordChange->exec($this->post))) {
             $this->services->flashes->addInfo('Your password has been success changed');
             $this->redirect('/profile');
         }
 
-        $this->renderView('user/password-change', ['data' => $_POST, 'errors' => $errors ?? []]);
+        $this->renderView('user/password-change', ['data' => $this->post, 'errors' => $errors ?? []]);
     }
 
     protected function logoutAction()

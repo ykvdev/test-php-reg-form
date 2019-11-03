@@ -17,12 +17,16 @@ abstract class AbstractController
     protected $models;
 
     /** @var array */
-    protected $request;
+    protected $get;
 
-    public function __construct(array $config, array $request)
+    /** @var array */
+    protected $post;
+
+    public function __construct(array $config, array $get)
     {
         $this->config = $config;
-        $this->request = $request;
+        $this->get = array_map('trim', array_merge($get, $_GET));
+        $this->post = array_map('trim', $_POST);
 
         $this->services = new Container($this->config);
         $this->models = new \app\models\Container($this->config, $this->services);
