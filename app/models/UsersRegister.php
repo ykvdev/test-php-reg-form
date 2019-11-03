@@ -45,7 +45,7 @@ class UsersRegister extends Users
             $this->errors['password'] = $error;
         }
 
-        if(!$this->data['repassword']) {
+        if(!isset($this->data['repassword'])) {
             $this->errors['repassword'] = 'Repeat password is required';
         } elseif($this->data['password'] && $this->data['password'] != $this->data['repassword']) {
             $this->errors['repassword'] = 'Passwords is not match';
@@ -55,7 +55,7 @@ class UsersRegister extends Users
             $this->errors['full_name'] = $error;
         }
 
-        if(!$this->data['captcha']) {
+        if(!isset($this->data['captcha'])) {
             $this->errors['captcha'] = 'Captcha is required';
         } elseif(!$this->services->captcha()->validate($this->data['captcha'])) {
             $this->errors['captcha'] = 'Captcha is not match';

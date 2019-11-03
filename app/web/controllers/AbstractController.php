@@ -28,14 +28,32 @@ abstract class AbstractController
         $this->models = new \app\models\Container($this->config, $this->services);
     }
 
-    public function runAction(string $alias, string $availableForRole)
+    public function runAction(string $alias, string $role)
     {
-        $realRole = $this->models->users->getAuthorised() ? Users::ROLE_USER : Users::ROLE_GUEST;
-        if($availableForRole != Users::ROLE_ALL && $realRole != $availableForRole) {
+        if($realRole = $this->getRealRole($role)) {
             $this->redirect($this->config['routes_for_roles'][$realRole]);
+        } elseif(!$this->validateAuthCookies() && $this->models->users->logout()) {
+            $this->redirect($this->config['routes_for_roles'][Users::ROLE_GUEST]);
         } else {
             $this->{$alias . 'Action'}();
         }
+    }
+
+    private function getRealRole(string $actionRole) : ?string
+    {
+        $realRole = $this->models->users->getAuthorised() ? Users::ROLE_USER : Users::ROLE_GUEST;
+        if($actionRole == Users::ROLE_ALL || $realRole == $actionRole) {
+            return null;
+        } else {
+            return $realRole;
+        }
+    }
+
+    private function validateAuthCookies() : bool
+    {
+        $user = $this->models->users->getAuthorised();
+        return !$user || ($user['ip'] == $this->models->users->getIp()
+                && $user['browser'] == $_SERVER['HTTP_USER_AGENT']);
     }
 
     protected function renderView(string $viewAlias, array $vars = []) : void

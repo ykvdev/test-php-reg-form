@@ -32,7 +32,7 @@ class UsersPasswordChange extends Users
             $this->errors['password'] = $error;
         }
 
-        if(!$this->data['repassword']) {
+        if(!isset($this->data['repassword'])) {
             $this->errors['repassword'] = 'Repeat password is required';
         } elseif($this->data['password'] && $this->data['password'] != $this->data['repassword']) {
             $this->errors['repassword'] = 'Passwords is not match';

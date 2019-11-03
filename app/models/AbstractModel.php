@@ -139,6 +139,9 @@ class AbstractModel
 
     protected function filterFieldsList(array $data) : array
     {
-        return array_intersect_key($data, array_flip($this->dbFields));
+        $filtered = array_intersect_key($data, array_flip($this->dbFields));
+        $filtered = array_map('trim', $filtered);
+
+        return $filtered;
     }
 }

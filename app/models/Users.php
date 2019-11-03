@@ -25,7 +25,10 @@ class Users extends AbstractModel
             'fail_auth_counter' => 0
         ], $user['id']);
 
-        $_SESSION[self::SESSION_NAME] = $user;
+        $_SESSION[self::SESSION_NAME] = array_merge($user, [
+            'browser' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+            'ip' => $this->getIp()
+        ]);
     }
 
     /**
@@ -76,7 +79,6 @@ class Users extends AbstractModel
     {
         $error = null;
 
-        $login = trim($login);
         if(!$login) {
             $error = 'Login is required';
         } elseif(!Validator::noWhitespace()->validate($login)) {
@@ -94,7 +96,6 @@ class Users extends AbstractModel
     {
         $error = null;
 
-        $email = trim($email);
         if(!$email) {
             $error = 'E-mail is required';
         } elseif(!Validator::email()->validate($email)) {
@@ -110,7 +111,6 @@ class Users extends AbstractModel
     {
         $error = null;
 
-        $password = trim($password);
         if(!$password) {
             $error = 'Password is required';
         } elseif (!Validator::length(6, 100)->validate($password)) {
@@ -124,7 +124,6 @@ class Users extends AbstractModel
     {
         $error = null;
 
-        $fullName = trim($fullName);
         if(!$fullName) {
             $error = 'Full name is required';
         } elseif(Validator::regex('/[^a-zа-я\' ]/i')->validate($fullName)) {
@@ -134,5 +133,18 @@ class Users extends AbstractModel
         }
 
         return $error;
+    }
+
+    public function getIp() : ?string
+    {
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
+            && filter_var($_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP)) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['REMOTE_ADDR'])
+            && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
+            return $_SERVER['REMOTE_ADDR'];
+        } else {
+            return null;
+        }
     }
 }
