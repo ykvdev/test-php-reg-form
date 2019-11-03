@@ -55,14 +55,12 @@ class UserController extends AbstractController
 
     public function passwordChangeAction() : void
     {
-        /*
-        Изменение пароля:
-        Введите старый пароль
-        Введите новый пароль
-        Повторите новый пароль
-        */
+        if(isset($_POST['save']) && !($errors = $this->models->usersPasswordChange->exec($_POST))) {
+            $this->services->flashes->addInfo('Your password has been success changed');
+            $this->redirect('/profile');
+        }
 
-        $this->renderView('user/password-change');
+        $this->renderView('user/password-change', ['data' => $_POST, 'errors' => $errors ?? []]);
     }
 
     public function logoutAction()

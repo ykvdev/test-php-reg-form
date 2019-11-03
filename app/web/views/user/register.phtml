@@ -10,10 +10,10 @@ $formFields = [
     'email' => ['E-mail', 'email', 'E-mail is correct'],
     'password' => ['Password', 'password', 'Password is correct'],
     'repassword' => ['Repeat Password', 'password', 'Repeat password is correct'],
-    'full_name' => ['Full Name', 'full_name', 'Full name is correct'],
+    'full_name' => ['Full Name', 'text', 'Full name is correct'],
 ];
 ?>
-<form method="post" action="/" class="registration" autocomplete="off">
+<form method="post" action="/" autocomplete="off">
     <?= $this->csrf('/') ?>
     <div class="card">
         <h5 class="card-header">Registration</h5>
