@@ -1,1 +1,5 @@
-404 Not Found
+<?php declare(strict_types=1);
+
+$error = '404 Not Found';
+$this->layout('layout', ['title' => $error]);
+echo '<h1>' . $error . '</h1>';

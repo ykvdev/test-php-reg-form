@@ -31,7 +31,7 @@ abstract class AbstractController
     public function runAction(string $alias, string $availableForRole)
     {
         $realRole = $this->models->users->getAuthorised() ? Users::ROLE_USER : Users::ROLE_GUEST;
-        if($realRole != $availableForRole) {
+        if($availableForRole != Users::ROLE_ALL && $realRole != $availableForRole) {
             $this->redirect($this->config['routes_for_roles'][$realRole]);
         } else {
             $this->{$alias . 'Action'}();

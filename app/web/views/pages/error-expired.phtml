@@ -1,1 +1,5 @@
-The page has expired
+<?php declare(strict_types=1);
+
+$error = 'The page has expired';
+$this->layout('layout', ['title' => $error]);
+echo '<h1>' . $error . '</h1>';

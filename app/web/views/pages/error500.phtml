@@ -1,1 +1,5 @@
-500 Internal Server Error
+<?php declare(strict_types=1);
+
+$error = '500 Internal Server Error';
+$this->layout('layout', ['title' => $error]);
+echo '<h1>' . $error . '</h1>';
