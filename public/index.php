@@ -24,4 +24,4 @@ $config = array_merge_recursive(
     require __DIR__ . '/../app/configs/envs/' . APP_ENV . '.php'
 );
 
-(new \app\web\Bootstrap($config))->dispatch();
+(new \app\web\Bootstrap($config))->run();

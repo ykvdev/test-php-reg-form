@@ -2,13 +2,17 @@
 
 namespace app\web;
 
+use app\models\Users;
 use app\services\Container;
 use app\web\actions\AbstractAction;
 use app\web\actions\StaticPageAction;
 use app\web\controllers\AbstractController;
 use app\web\controllers\PagesController;
+use app\web\controllers\UserController;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
+use http\Client\Curl\User;
+use ParagonIE\AntiCSRF\AntiCSRF;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 use function FastRoute\cachedDispatcher;
@@ -21,7 +25,17 @@ class Bootstrap
     public function __construct(array $config)
     {
         $this->config = $config;
+    }
 
+    public function run()
+    {
+        $this->initErrorHandler();
+        $this->validateCsrfIfNeed();
+        $this->dispatch();
+    }
+
+    private function initErrorHandler()
+    {
         if(APP_ENV == ENV_DEV) {
             $whoops = new Run();
             $whoops->prependHandler(new PrettyPageHandler());
@@ -29,12 +43,27 @@ class Bootstrap
         }
     }
 
-    public function dispatch() : void
+    private function validateCsrfIfNeed()
+    {
+        if($_POST && !(new AntiCSRF())->validateRequest()) {
+            $this->invokeAction(
+                PagesController::class,
+                'index',
+                Users::ROLE_ALL,
+                ['view' => 'error-expired']
+            );
+            exit();
+        }
+    }
+
+    private function dispatch() : void
     {
         try {
             $dispatcher = cachedDispatcher(function(RouteCollector $r) {
                 foreach ($this->config['routes'] as $routeParts) {
-                    $r->addRoute($routeParts[0], $routeParts[1], [$routeParts[2], $routeParts[3]]);
+                    [$method, $route, $controller, $action] = $routeParts;
+                    $role = $routeParts[4] ?? null;
+                    $r->addRoute($method, $route, [$controller, $action, $role]);
                 }
             }, [
                 'cacheFile' => $this->config['routes_cache_file'],
@@ -47,22 +76,23 @@ class Bootstrap
             $requestParams = $routeInfo[2] ?? null;
             switch ($result) {
                 case Dispatcher::NOT_FOUND:
-                    $this->invokeAction(PagesController::class, 'error404Action');
+                    $this->invokeAction(PagesController::class, 'error404');
                     break;
 
                 case Dispatcher::METHOD_NOT_ALLOWED:
-                    $this->invokeAction(PagesController::class, 'error405Action');
+                    $this->invokeAction(PagesController::class, 'error405');
                     break;
 
                 case Dispatcher::FOUND:
-                    $this->invokeAction($handler[0], $handler[1], $requestParams);
+                    [$controller, $action, $role] = $handler;
+                    $this->invokeAction($controller, $action, $role, $requestParams);
                     break;
             }
         } catch (\Throwable $e) {
             if(APP_ENV == ENV_DEV) {
                 throw $e;
             } else {
-                $this->invokeAction(PagesController::class, 'error500Action');
+                $this->invokeAction(PagesController::class, 'error500');
             }
         }
     }
@@ -83,13 +113,10 @@ class Bootstrap
         return $uri;
     }
 
-    private function invokeAction(string $controllerClassName, string $actionMethodName, array $request = []) : void
+    private function invokeAction(string $controllerClassName, string $action, string $role = Users::ROLE_ALL, array $request = []) : void
     {
-        $servicesContainer = new Container($this->config);
-        $modelsContainer = new \app\models\Container($this->config, $servicesContainer);
-
         /** @var AbstractController $controller */
-        $controller = new $controllerClassName($this->config, $servicesContainer, $modelsContainer, $request);
-        $controller->$actionMethodName();
+        $controller = new $controllerClassName($this->config, $request);
+        $controller->runAction($action, $role);
     }
 }

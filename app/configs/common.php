@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
+
+use \app\models\Users;
+use \app\web\controllers\UserController;
 
 return [
-    'base_url' => 'http://192.168.56.2:8000',
-
     'sqlite_db_file' => __DIR__ . '/../../data/sii_test_task.sqlite3',
 
     'view_renderer' => [
@@ -27,11 +28,20 @@ return [
     ],
 
     'routes_cache_file' => __DIR__ . '/../../data/routes.cache',
+    'routes_for_roles' => [
+        Users::ROLE_USER => '/profile',
+        Users::ROLE_GUEST => '/',
+    ],
     'routes' => [
-        [['GET', 'POST'], '/', \app\web\controllers\UserController::class, 'registerAction'],
-        ['GET', '/confirm-email/{email}/{token}', \app\web\controllers\UserController::class, 'confirmEmailAction'],
-        ['GET', '/profile', \app\web\controllers\UserController::class, 'profileAction'],
-        [['GET', 'POST'], '/login', \app\web\controllers\UserController::class, 'loginAction'],
-        ['GET', '/captcha', \app\web\controllers\UserController::class, 'captchaAction'],
+        [['GET', 'POST'], '/', UserController::class, 'register', Users::ROLE_GUEST],
+        ['GET', '/confirm-email/{email}/{token}', UserController::class, 'confirmEmail', Users::ROLE_GUEST],
+        [['GET', 'POST'], '/login', UserController::class, 'login', Users::ROLE_GUEST],
+
+        ['GET', '/profile', UserController::class, 'profile', Users::ROLE_USER],
+        ['GET', '/profile-edit', UserController::class, 'profileEdit', Users::ROLE_USER],
+        ['GET', '/password-change', UserController::class, 'passwordChange', Users::ROLE_USER],
+        ['GET', '/logout', UserController::class, 'passwordChange', Users::ROLE_USER],
+
+        ['GET', '/captcha', UserController::class, 'captcha', Users::ROLE_ALL],
     ],
 ];

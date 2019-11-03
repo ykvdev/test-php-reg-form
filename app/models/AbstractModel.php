@@ -8,13 +8,13 @@ use ParagonIE\EasyDB\EasyStatement;
 class AbstractModel
 {
     /** @var string */
-    public $tableName;
+    public $dbTable;
 
     /** @var string */
-    public $pkName;
+    public $dbPk;
 
     /** @var array */
-    public $fields;
+    public $dbFields;
 
     /** @var array */
     protected $config;
@@ -39,7 +39,7 @@ class AbstractModel
      */
     public function isExists($conditions) : bool
     {
-        return (bool)$this->getRow($conditions, $this->pkName);
+        return (bool)$this->getRow($conditions, $this->dbPk);
     }
 
     /**
@@ -50,7 +50,7 @@ class AbstractModel
      */
     public function getRow($conditions, $selectFields = '*') : ?array
     {
-        $conditions = is_array($conditions) ? $conditions : [$this->pkName => $conditions];
+        $conditions = is_array($conditions) ? $conditions : [$this->dbPk => $conditions];
         $result = $this->getRows($conditions, $selectFields, 1);
         return $result[0] ?? null;
     }
@@ -83,7 +83,7 @@ class AbstractModel
             $where = null;
         }
 
-        $statement = "SELECT {$selectFields} FROM {$this->tableName}"
+        $statement = "SELECT {$selectFields} FROM {$this->dbTable}"
             . ($conditions ? ' WHERE ' . $where : '')
             . ($limit ? ' LIMIT ' . $limit : '')
             . ($offset ? ' OFFSET ' . $offset : '');
@@ -103,7 +103,7 @@ class AbstractModel
      */
     protected function insert(array $data) : string
     {
-        $this->db->insert($this->tableName, $this->filterFieldsList($data));
+        $this->db->insert($this->dbTable, $this->filterFieldsList($data));
 
         return $this->db->lastInsertId();
     }
@@ -118,8 +118,8 @@ class AbstractModel
      */
     protected function update(array $changes, $conditions) : int
     {
-        $conditions = is_array($conditions) ? $conditions : [$this->pkName => $conditions];
-        $result = $this->db->update($this->tableName, $this->filterFieldsList($changes), $conditions);
+        $conditions = is_array($conditions) ? $conditions : [$this->dbPk => $conditions];
+        $result = $this->db->update($this->dbTable, $this->filterFieldsList($changes), $conditions);
 
         return $result;
     }
@@ -133,12 +133,12 @@ class AbstractModel
      */
     protected function delete($conditions) : int
     {
-        return $this->db->delete($this->tableName,
-            is_array($conditions) ? $conditions : [$this->pkName => $conditions]);
+        return $this->db->delete($this->dbTable,
+            is_array($conditions) ? $conditions : [$this->dbPk => $conditions]);
     }
 
     private function filterFieldsList(array $data) : array
     {
-        return array_intersect_key($data, array_flip($this->fields));
+        return array_intersect_key($data, array_flip($this->dbFields));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\web\controllers;
 
+use app\models\Users;
 use app\services\Container;
 
 abstract class AbstractController
@@ -18,12 +19,23 @@ abstract class AbstractController
     /** @var array */
     protected $request;
 
-    public function __construct(array $config, Container $services, \app\models\Container $models, $request)
+    public function __construct(array $config, array $request)
     {
         $this->config = $config;
-        $this->services = $services;
-        $this->models = $models;
         $this->request = $request;
+
+        $this->services = new Container($this->config);
+        $this->models = new \app\models\Container($this->config, $this->services);
+    }
+
+    public function runAction(string $alias, string $availableForRole)
+    {
+        $realRole = $this->models->users->getAuthorised() ? Users::ROLE_USER : Users::ROLE_GUEST;
+        if($realRole != $availableForRole) {
+            $this->redirect($this->config['routes_for_roles'][$realRole]);
+        } else {
+            $this->{$alias . 'Action'}();
+        }
     }
 
     protected function renderView(string $viewAlias, array $vars = []) : void
