@@ -29,17 +29,17 @@ class Bootstrap
 
     public function run()
     {
-        $this->initErrorHandler();
+        $this->initErrorsHandler();
         $this->validateCsrfIfNeed();
         $this->dispatch();
     }
 
-    private function initErrorHandler()
+    private function initErrorsHandler()
     {
         if(APP_ENV == ENV_DEV) {
-            $whoops = new Run();
-            $whoops->prependHandler(new PrettyPageHandler());
-            $whoops->register();
+            $handler = new PrettyPageHandler;
+            $handler->setEditor($this->config['errors_handler_editor']);
+            (new Run())->prependHandler($handler)->register();
         }
     }
 

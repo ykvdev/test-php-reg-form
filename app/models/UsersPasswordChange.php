@@ -16,7 +16,7 @@ class UsersPasswordChange extends Users
     {
         $this->data = $data;
         if($this->validate()) {
-            $this->save();
+            $this->changePassword();
         }
 
         return $this->errors;
@@ -30,9 +30,11 @@ class UsersPasswordChange extends Users
 
         if($error = $this->validatePassword($this->data['password'])) {
             $this->errors['password'] = $error;
+        } elseif(in_array($this->data['password'], [$this->getAuthorised('login'), $this->getAuthorised('email')])) {
+            $this->errors['password'] = 'Password can\'t equal to login or e-mail';
         }
 
-        if(!isset($this->data['repassword'])) {
+        if(!isset($this->data['repassword']) || !$this->data['repassword']) {
             $this->errors['repassword'] = 'Repeat password is required';
         } elseif($this->data['password'] && $this->data['password'] != $this->data['repassword']) {
             $this->errors['repassword'] = 'Passwords is not match';
@@ -41,7 +43,7 @@ class UsersPasswordChange extends Users
         return empty($this->errors);
     }
 
-    private function save() : void
+    private function changePassword() : void
     {
         $old = $this->getAuthorised();
         $new = $this->filterFieldsList($this->data);

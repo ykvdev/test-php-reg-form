@@ -2,9 +2,9 @@
 
 namespace app\models;
 
-class UsersConfirmEmailAndAuth extends Users
+class UsersConfirmEmail extends Users
 {
-    public $dbFields = ['email_confirmed_at', 'last_auth_at', 'fail_auth_counter'];
+    public $dbFields = ['email_confirmed_at', 'last_auth_at', 'fail_auth_counter', 'pw_restore_token', 'pw_token_sent_at'];
 
     /** @var array */
     private $data;
@@ -15,7 +15,7 @@ class UsersConfirmEmailAndAuth extends Users
     /** @var string */
     private $error;
 
-    public function exec(array $data) : string
+    public function exec(array $data) : ?string
     {
         $this->data = $data;
         if($this->validate()) {

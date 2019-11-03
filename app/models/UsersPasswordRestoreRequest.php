@@ -39,10 +39,14 @@ class UsersPasswordRestoreRequest extends Users
                 : ['email' => $this->data['identity']]);
             if (!$this->user) {
                 $this->errors['identity'] = ($isIdentityLogin ? 'Login' : 'E-mail') . ' not found';
+            } elseif(!$this->user['email_confirmed_at']) {
+                $this->errors['identity'] = 'Your e-mail'
+                    . ($isIdentityLogin ? ' ' . $this->user['email'] : '')
+                    . ' is not confirmed';
             }
         }
 
-        if(!isset($this->data['captcha'])) {
+        if(!isset($this->data['captcha']) || !$this->data['captcha']) {
             $this->errors['captcha'] = 'Captcha is required';
         } elseif(!$this->services->captcha()->validate($this->data['captcha'])) {
             $this->errors['captcha'] = 'Captcha is not match';
@@ -68,7 +72,8 @@ class UsersPasswordRestoreRequest extends Users
             'Password restore', 'mails/password-restore',
             [
                 'full_name' => $this->user['full_name'],
-                'url' => $this->services->getBaseUrl() . '/password-restore/' . $this->user['pw_restore_token']
+                'url' => $this->services->getBaseUrl() . '/password-restore/' . $this->user['pw_restore_token'],
+                'token_ttl' => $this->config['password_restore_token_ttl_hours']
             ]
         );
     }

@@ -60,7 +60,7 @@ class UsersLogin extends Users
         }
 
         if($this->isNeedCaptcha()) {
-            if(!isset($this->data['captcha'])) {
+            if(!isset($this->data['captcha']) || !$this->data['captcha']) {
                 $this->errors['captcha'] = 'Captcha is required';
                 return false;
             } elseif(!$this->services->captcha()->validate($this->data['captcha'])) {

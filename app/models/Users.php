@@ -84,7 +84,7 @@ class Users extends AbstractModel
 
     public function makePasswordRestoreToken() : string
     {
-        return uniqid(time(), true);
+        return uniqid((string)time(), true);
     }
 
     public function validateLogin(?string $login) : ?string

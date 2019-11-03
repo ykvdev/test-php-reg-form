@@ -18,7 +18,7 @@ class UserController extends AbstractController
 
     protected function confirmEmailAction()
     {
-        if($error = $this->models->usersConfirmEmailAndAuth->exec($this->request)) {
+        if($error = $this->models->usersConfirmEmail->exec($this->request)) {
             $this->services->flashes->addError($error);
             $this->redirect($this->config['routes_for_roles'][Users::ROLE_GUEST]);
         } else {
@@ -48,6 +48,23 @@ class UserController extends AbstractController
         }
 
         $this->renderView('user/password-restore-request', ['data' => $_POST, 'errors' => $errors ?? []]);
+    }
+
+    protected function passwordRestoreAction() : void
+    {
+        if($error = $this->models->usersPasswordRestore->validateToken($this->request)) {
+            $this->services->flashes->addError($error);
+            $this->redirect($this->config['routes_for_roles'][Users::ROLE_GUEST]);
+        } elseif(isset($_POST['restore']) && !($errors = $this->models->usersPasswordRestore->exec($_POST))) {
+            $this->services->flashes->addInfo('Your new password has been success saved');
+            $this->redirect($this->config['routes_for_roles'][Users::ROLE_USER]);
+        }
+
+        $this->renderView('user/password-restore', [
+            'data' => $_POST,
+            'errors' => $errors ?? [],
+            'token' => $this->request['token'] ?? null
+        ]);
     }
 
     protected function profileAction() : void

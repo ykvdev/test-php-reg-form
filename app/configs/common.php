@@ -6,7 +6,11 @@ use \app\web\controllers\UserController;
 return [
     'sqlite_db_file' => __DIR__ . '/../../data/sii_test_task.sqlite3',
 
+    'errors_handler_editor' => 'phpstorm',
+
     'max_fail_auth' => 15,
+
+    'password_restore_token_ttl_hours' => 24,
 
     'view_renderer' => [
         'views_dir' => __DIR__ . '/../web/views',
@@ -39,6 +43,7 @@ return [
         ['GET', '/confirm-email/{email}/{token}', UserController::class, 'confirmEmail', Users::ROLE_GUEST],
         [['GET', 'POST'], '/login', UserController::class, 'login', Users::ROLE_GUEST],
         [['GET', 'POST'], '/password-restore-request', UserController::class, 'passwordRestoreRequest', Users::ROLE_GUEST],
+        [['GET', 'POST'], '/password-restore/{token}', UserController::class, 'passwordRestore', Users::ROLE_GUEST],
 
         ['GET', '/profile', UserController::class, 'profile', Users::ROLE_USER],
         [['GET', 'POST'], '/profile-edit', UserController::class, 'profileEdit', Users::ROLE_USER],
