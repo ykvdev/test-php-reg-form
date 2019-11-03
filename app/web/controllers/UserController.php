@@ -37,6 +37,33 @@ class UserController extends AbstractController
         $this->renderView('user/profile');
     }
 
+    public function profileEditAction() : void
+    {
+        $this->renderView('user/profile-edit');
+    }
+
+    public function passwordChangeAction() : void
+    {
+        /*
+        Изменение пароля:
+        Введите старый пароль
+        Введите новый пароль
+        Повторите новый пароль
+        */
+
+        $this->renderView('user/password-change');
+    }
+
+    public function logoutAction()
+    {
+        if($this->models->users->logout()) {
+            $this->redirect($this->config['routes_for_roles'][Users::ROLE_GUEST]);
+        } else {
+            $this->services->flashes->addError('Internal error');
+            $this->goBack();
+        }
+    }
+
     public function captchaAction() : void
     {
         $this->services->captcha()->buildAndOutput();

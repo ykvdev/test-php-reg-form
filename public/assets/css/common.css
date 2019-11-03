@@ -8,6 +8,6 @@ html, body {
     min-height: 100%;
 }
 
-.registration .card .card-body {
+.card .card-body {
     padding-bottom: 0;
 }
