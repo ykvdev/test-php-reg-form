@@ -29,8 +29,16 @@ class UsersRegister extends Users
             $this->errors['login'] = $error;
         }
 
+        if($error = $this->isExists(['login' => $this->data['login']])) {
+            $this->errors['login'] = 'Login already exists';
+        }
+
         if($error = $this->validateEmail($this->data['email'])) {
             $this->errors['email'] = $error;
+        }
+
+        if($error = $this->isExists(['email' => $this->data['email']])) {
+            $this->errors['email'] = 'E-mail already exists';
         }
 
         if($error = $this->validatePassword($this->data['password'])) {

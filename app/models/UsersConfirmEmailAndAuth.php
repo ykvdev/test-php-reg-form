@@ -9,6 +9,9 @@ class UsersConfirmEmailAndAuth extends Users
     /** @var array */
     private $data;
 
+    /** @var array */
+    private $user;
+
     /** @var string */
     private $error;
 
@@ -17,7 +20,7 @@ class UsersConfirmEmailAndAuth extends Users
         $this->data = $data;
         if($this->validate()) {
             $this->activate();
-            $this->login($this->data['email']);
+            $this->login($this->user);
         }
 
         return $this->error;
@@ -25,17 +28,22 @@ class UsersConfirmEmailAndAuth extends Users
 
     private function validate() : bool
     {
-        if($this->error = $this->validateEmail($this->data['email'] ?? null, true)) {
+        if($this->error = $this->validateEmail($this->data['email'] ?? null)) {
             return false;
         }
 
-        $user = $this->getRow(['email' => $this->data['email']], ['registered_at', 'email_confirmed_at']);
-        if($user['email_confirmed_at']) {
+        $this->user = $this->getRow(['email' => $this->data['email']]);
+        if(!$this->user) {
+            $this->error = 'E-mail not exists';
+            return false;
+        }
+
+        if($this->user['email_confirmed_at']) {
             $this->error = 'This e-mail already confirmed';
             return false;
         }
 
-        if(strcmp(md5($this->data['email'] . $user['registered_at']), $this->data['token'] ?? null) !== 0) {
+        if(strcmp(md5($this->data['email'] . $this->user['registered_at']), $this->data['token'] ?? null) !== 0) {
             $this->error = 'E-mail confirmation token incorrect';
             return false;
         }
@@ -45,6 +53,6 @@ class UsersConfirmEmailAndAuth extends Users
 
     private function activate() : void
     {
-        $this->update(['email_confirmed_at' => date('Y-m-d H:i:s')], ['email' => $this->data['email']]);
+        $this->update(['email_confirmed_at' => date('Y-m-d H:i:s')], $this->user['id']);
     }
 }

@@ -3,6 +3,7 @@
 namespace app\web\controllers;
 
 use app\models\Users;
+use http\Client\Curl\User;
 
 class UserController extends AbstractController
 {
@@ -29,7 +30,11 @@ class UserController extends AbstractController
 
     public function loginAction() : void
     {
-        $this->renderView('user/login');
+        if(isset($_POST['login']) && !($errors = $this->models->usersLogin->exec($_POST))) {
+            $this->redirect($this->config['routes_for_roles'][Users::ROLE_USER]);
+        }
+
+        $this->renderView('user/login', ['data' => $_POST, 'errors' => $errors ?? []]);
     }
 
     public function profileAction() : void

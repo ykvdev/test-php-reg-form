@@ -16,11 +16,12 @@ class Users extends AbstractModel
     public $dbPk = 'id';
     public $dbFields = ['id', 'login', 'email', 'password', 'full_name', 'registered_at', 'email_confirmed_at', 'last_auth_at'];
 
-    public function login(string $loginOrEmail) : void
+    public function login(array $user) : void
     {
-        $_SESSION[static::SESSION_NAME] =
-            $this->getRow(['login' => $loginOrEmail])
-            ?? $this->getRow(['email' => $loginOrEmail]);
+        $user['last_auth_at'] = date('Y-m-d H:i:s');
+        $this->update(['last_auth_at' => $user['last_auth_at']], $user['id']);
+
+        $_SESSION[static::SESSION_NAME] = $user;
     }
 
     public function getAuthorised() : ?array
@@ -43,7 +44,7 @@ class Users extends AbstractModel
         return password_verify($plainPassword, $hashedPassword);
     }
 
-    public function validateLogin(?string $login, bool $mustExists = false) : ?string
+    public function validateLogin(?string $login) : ?string
     {
         $error = null;
 
@@ -58,17 +59,10 @@ class Users extends AbstractModel
             $error = 'Login length wrong, min: 3, max: 20 symbols';
         }
 
-        $exists = $this->isExists(['login' => $login]);
-        if(!$mustExists && $exists) {
-            $error = 'Login already exists';
-        } elseif($mustExists && !$exists) {
-            $error = 'Login not exists';
-        }
-
         return $error;
     }
 
-    public function validateEmail(?string $email, bool $mustExists = false) : ?string
+    public function validateEmail(?string $email) : ?string
     {
         $error = null;
 
@@ -79,13 +73,6 @@ class Users extends AbstractModel
             $error = 'E-mail format is incorrect';
         } elseif (!Validator::length(null, 100)->validate($email)) {
             $error = 'E-mail length wrong, max: 100 symbols';
-        }
-
-        $exists = $this->isExists(['email' => $email]);
-        if(!$mustExists && $exists) {
-            $error = 'E-mail already exists';
-        } elseif($mustExists && !$exists) {
-            $error = 'E-mail not exists';
         }
 
         return $error;

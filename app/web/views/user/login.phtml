@@ -1,1 +1,44 @@
-Login action...
+<?php
+
+/** @var $data array */
+/** @var $errors array */
+
+$this->layout('layout', ['title' => 'Login']);
+
+$formFields = [
+    'identity' => ['Login or e-mail', 'text', 'Login/e-mail is correct'],
+    'password' => ['Password', 'password', 'Password is correct'],
+];
+?>
+<form method="post" action="/login">
+    <?= $this->csrf('/login') ?>
+    <div class="card">
+        <h5 class="card-header">Login</h5>
+        <div class="card-body">
+            <?php foreach ($formFields as $alias => $parts):
+                [$label, $type, $correctMsg] = $parts ?>
+                <div class="form-group row">
+                    <label for="<?= $alias ?>" class="col-md-4 col-form-label"><?= $label ?></label>
+                    <div class="col-md-8">
+                        <input type="<?= $type ?>" id="<?= $alias ?>" name="<?= $alias ?>" required
+                               value="<?= $this->e($data[$alias] ?? '') ?>"
+                               class="form-control <?= isset($errors[$alias]) ? 'is-invalid' : '' ?>">
+                        <div class="<?= isset($errors[$alias]) ? 'invalid-feedback' : 'valid-feedback' ?>">
+                            <?= $this->e($errors[$alias] ?? $correctMsg) ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach ?>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col-md-4">
+                    <button type="submit" name="login" class="btn btn-primary">Login</button>
+                </div>
+                <div class="col-md-8 pt-2">
+                    If you not registered, go to <a href="/">register form</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

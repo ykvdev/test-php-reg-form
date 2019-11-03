@@ -9,6 +9,7 @@ namespace app\models;
  * @property-read Users $users
  * @property-read UsersRegister $usersRegister
  * @property-read UsersConfirmEmailAndAuth $usersConfirmEmailAndAuth
+ * @property-read UsersLogin $usersLogin
  */
 class Container
 {
@@ -32,6 +33,7 @@ class Container
         $this->modelsLazy['users'] = Users::class;
         $this->modelsLazy['usersRegister'] = UsersRegister::class;
         $this->modelsLazy['usersConfirmEmailAndAuth'] = UsersConfirmEmailAndAuth::class;
+        $this->modelsLazy['usersLogin'] = UsersLogin::class;
     }
 
     public function __get($name)
