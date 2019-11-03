@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use acurrieclark\PhpPasswordVerifier\Verifier;
 use Respect\Validation\Validator;
 
 class Users extends AbstractModel
@@ -125,8 +126,16 @@ class Users extends AbstractModel
 
         if(!$password) {
             $error = 'Password is required';
-        } elseif (!Validator::length(6, 100)->validate($password)) {
-            $error = 'Password length wrong, min: 6, max: 100 symbols';
+        } else {
+            $verifier = (new Verifier())
+                ->setCheckContainsCapitals()
+                ->setCheckContainsLetters()
+                ->setCheckContainsNumbers()
+                ->setMinLength(6)
+                ->setMaxLength(20);
+            if(!$verifier->checkPassword($password)) {
+                $error = 'Password should be min: 6, max: 100, contains: letters, capitals and numbers';
+            }
         }
 
         return $error;

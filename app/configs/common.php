@@ -10,7 +10,7 @@ return [
 
     'max_fail_auth' => 15,
 
-    'password_restore_token_ttl_hours' => 24,
+    'password_restore_token_ttl_hours' => 1,
 
     'view_renderer' => [
         'views_dir' => __DIR__ . '/../web/views',

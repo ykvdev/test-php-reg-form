@@ -17,7 +17,8 @@
         "paragonie/anti-csrf": "^2.2",
         "respect/validation": "^1.1",
         "sensiolabs/security-checker": "^6.0",
-        "gregwar/captcha": "^1.1"
+        "gregwar/captcha": "^1.1",
+        "acurrieclark/php-password-verifier": "^0.2.1"
     },
     "autoload": {
         "psr-4": {

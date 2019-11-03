@@ -46,6 +46,7 @@ if($_POST && (new AntiCSRF())->validateRequest()) {
 # Input validation
 
 https://respect-validation.readthedocs.io/en/1.1/concrete-api/
+https://github.com/acurrieclark/php-password-verifier
 
 # Captcha
 

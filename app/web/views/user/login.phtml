@@ -37,7 +37,7 @@ $formFields = [
                 <div class="form-group row">
                     <label for="captcha" class="col-md-4 col-form-label">Enter Captcha</label>
                     <div class="col-md-4">
-                        <input type="text" id="captcha" name="captcha" required
+                        <input type="text" id="captcha" name="captcha" required autocomplete="off"
                                class="form-control <?= isset($errors['captcha']) ? 'is-invalid' : '' ?>">
                         <div class="<?= isset($errors['captcha']) ? 'invalid-feedback' : 'valid-feedback' ?>">
                             <?= $this->e($errors['captcha'] ?? 'Captcha is correct') ?>

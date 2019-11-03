@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f5857728806d69e4df09e095b121cd48",
+    "content-hash": "053d646a01f7db273b94de8254e3edd3",
     "packages": [
+        {
+            "name": "acurrieclark/php-password-verifier",
+            "version": "v0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/acurrieclark/php-password-verifier.git",
+                "reference": "5d3ad7b4a0df2c592c505b103169fb357f06760d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/acurrieclark/php-password-verifier/zipball/5d3ad7b4a0df2c592c505b103169fb357f06760d",
+                "reference": "5d3ad7b4a0df2c592c505b103169fb357f06760d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4.0 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "acurrieclark\\PhpPasswordVerifier\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Currie-Clark",
+                    "email": "acurrieclark@gmail.com"
+                }
+            ],
+            "description": "Framework agnostic password strength checker",
+            "time": "2017-01-30T01:38:35+00:00"
+        },
         {
             "name": "gregwar/captcha",
             "version": "v1.1.7",
