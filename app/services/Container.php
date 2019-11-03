@@ -77,4 +77,25 @@ class Container
 
         return $this->servicesObjects['captcha'];
     }
+
+    public function getBaseUrl() : string
+    {
+        $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
+            || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+
+        return $protocol . $_SERVER['HTTP_HOST'];
+    }
+
+    public function getClientIp() : ?string
+    {
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
+            && filter_var($_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP)) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } elseif (isset($_SERVER['REMOTE_ADDR'])
+            && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
+            return $_SERVER['REMOTE_ADDR'];
+        } else {
+            return null;
+        }
+    }
 }

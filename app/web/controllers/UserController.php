@@ -40,6 +40,16 @@ class UserController extends AbstractController
         ]);
     }
 
+    protected function passwordRestoreRequestAction() : void
+    {
+        if(isset($_POST['restore']) && !($errors = $this->models->usersPasswordRestoreRequest->exec($_POST))) {
+            $this->services->flashes->addInfo('Check your E-mail for password restore link.');
+            $this->goBack();
+        }
+
+        $this->renderView('user/password-restore-request', ['data' => $_POST, 'errors' => $errors ?? []]);
+    }
+
     protected function profileAction() : void
     {
         $this->renderView('user/profile', ['user' => $this->models->users->getAuthorised()]);

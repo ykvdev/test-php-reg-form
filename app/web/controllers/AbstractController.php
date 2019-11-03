@@ -52,8 +52,8 @@ abstract class AbstractController
     private function validateAuthCookies() : bool
     {
         $user = $this->models->users->getAuthorised();
-        return !$user || ($user['ip'] == $this->models->users->getIp()
-                && $user['browser'] == $_SERVER['HTTP_USER_AGENT']);
+        return !$user || (strcmp($user['ip'], $this->services->getClientIp()) === 0
+                && strcmp($user['browser'], $_SERVER['HTTP_USER_AGENT']) === 0);
     }
 
     protected function renderView(string $viewAlias, array $vars = []) : void

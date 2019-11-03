@@ -12,6 +12,7 @@ namespace app\models;
  * @property-read UsersLogin $usersLogin
  * @property-read UsersProfileEdit $usersProfileEdit
  * @property-read UsersPasswordChange $usersPasswordChange
+ * @property-read UsersPasswordRestoreRequest $usersPasswordRestoreRequest
  */
 class Container
 {
@@ -36,6 +37,7 @@ class Container
         $this->modelsLazy['usersRegister'] = UsersRegister::class;
         $this->modelsLazy['usersConfirmEmailAndAuth'] = UsersConfirmEmailAndAuth::class;
         $this->modelsLazy['usersLogin'] = UsersLogin::class;
+        $this->modelsLazy['usersPasswordRestoreRequest'] = UsersPasswordRestoreRequest::class;
         $this->modelsLazy['usersProfileEdit'] = UsersProfileEdit::class;
         $this->modelsLazy['usersPasswordChange'] = UsersPasswordChange::class;
     }

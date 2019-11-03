@@ -43,7 +43,10 @@ class UsersConfirmEmailAndAuth extends Users
             return false;
         }
 
-        if(strcmp(md5($this->data['email'] . $this->user['registered_at']), $this->data['token'] ?? null) !== 0) {
+        if(strcmp(
+            $this->makeEmailConfirmToken($this->data['email'], $this->user['registered_at']),
+            $this->data['token'] ?? null) !== 0
+        ) {
             $this->error = 'E-mail confirmation token incorrect';
             return false;
         }

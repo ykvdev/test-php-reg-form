@@ -76,18 +76,12 @@ class UsersRegister extends Users
         $this->services->mailer()->send(
             $this->data['full_name'], $this->data['email'],
             'Confirm your E-mail', 'mails/register',
-            ['full_name' => $this->data['full_name'], 'url' => $this->makeEmailConfirmUrl()]
+            [
+                'full_name' => $this->data['full_name'],
+                'url' => $this->services->getBaseUrl() . '/confirm-email/'
+                    . urlencode($this->data['email']) . '/'
+                    . $this->makeEmailConfirmToken($this->data['email'], $this->data['registered_at'])
+            ]
         );
-    }
-
-    private function makeEmailConfirmUrl() : string
-    {
-        $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off')
-            || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-
-        $url = $protocol . $_SERVER['HTTP_HOST'] . '/confirm-email/'
-            . urlencode($this->data['email']) . '/' . md5($this->data['email'] . $this->data['registered_at']);
-
-        return $url;
     }
 }

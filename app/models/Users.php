@@ -14,20 +14,22 @@ class Users extends AbstractModel
 
     public $dbTable = 'users';
     public $dbPk = 'id';
-    public $dbFields = ['id', 'login', 'email', 'password', 'full_name', 'registered_at',
-        'email_confirmed_at', 'last_auth_at', 'fail_auth_counter'];
+    public $dbFields = ['id', 'login', 'email', 'password', 'full_name', 'registered_at', 'email_confirmed_at',
+        'last_auth_at', 'fail_auth_counter', 'pw_restore_token', 'pw_token_sent_at'];
 
     public function login(array $user) : void
     {
         $user['last_auth_at'] = date('Y-m-d H:i:s');
         $this->update([
             'last_auth_at' => $user['last_auth_at'],
-            'fail_auth_counter' => 0
+            'fail_auth_counter' => 0,
+            'pw_restore_token' => null,
+            'pw_token_sent_at' => null
         ], $user['id']);
 
         $_SESSION[self::SESSION_NAME] = array_merge($user, [
             'browser' => $_SERVER['HTTP_USER_AGENT'] ?? null,
-            'ip' => $this->getIp()
+            'ip' => $this->services->getClientIp()
         ]);
     }
 
@@ -73,6 +75,16 @@ class Users extends AbstractModel
     public function passwordVerify(string $plainPassword, string $hashedPassword) : bool
     {
         return password_verify($plainPassword, $hashedPassword);
+    }
+
+    public function makeEmailConfirmToken(string $email, string $registeredAt) : string
+    {
+        return md5($email . $registeredAt);
+    }
+
+    public function makePasswordRestoreToken() : string
+    {
+        return uniqid(time(), true);
     }
 
     public function validateLogin(?string $login) : ?string
@@ -133,18 +145,5 @@ class Users extends AbstractModel
         }
 
         return $error;
-    }
-
-    public function getIp() : ?string
-    {
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-            && filter_var($_SERVER['HTTP_X_FORWARDED_FOR'], FILTER_VALIDATE_IP)) {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])
-            && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
-            return $_SERVER['REMOTE_ADDR'];
-        } else {
-            return null;
-        }
     }
 }

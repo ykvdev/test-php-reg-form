@@ -14,7 +14,9 @@ $formFields = [
 <form method="post" action="/login">
     <?= $this->csrf('/login') ?>
     <div class="card">
-        <h5 class="card-header">Login</h5>
+        <div class="card-header">
+            <?php $this->insert('user/guest/nav', ['current' => 'login']) ?>
+        </div>
         <div class="card-body">
             <?php foreach ($formFields as $alias => $parts):
                 [$label, $type, $correctMsg] = $parts ?>
@@ -38,7 +40,7 @@ $formFields = [
                         <input type="text" id="captcha" name="captcha" required
                                class="form-control <?= isset($errors['captcha']) ? 'is-invalid' : '' ?>">
                         <div class="<?= isset($errors['captcha']) ? 'invalid-feedback' : 'valid-feedback' ?>">
-                            <?= $this->e($errors['captcha'] ?? $correctMsg) ?>
+                            <?= $this->e($errors['captcha'] ?? 'Captcha is correct') ?>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -54,11 +56,8 @@ $formFields = [
         </div>
         <div class="card-footer">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <button type="submit" name="login" class="btn btn-primary">Login</button>
-                </div>
-                <div class="col-md-8 pt-2">
-                    If you not registered, go to <a href="/">register form</a>
                 </div>
             </div>
         </div>

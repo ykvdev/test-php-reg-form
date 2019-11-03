@@ -4,7 +4,7 @@ namespace app\models;
 
 class UsersLogin extends Users
 {
-    public $dbFields = ['last_auth_at', 'fail_auth_counter'];
+    public $dbFields = ['last_auth_at', 'fail_auth_counter', 'pw_restore_token', 'pw_token_sent_at'];
 
     /** @var array */
     private $data;
