@@ -6,7 +6,7 @@ use app\models\Users;
 
 class UserController extends AbstractController
 {
-    public function registerAction() : void
+    protected function registerAction() : void
     {
         if(isset($_POST['register']) && !($errors = $this->models->usersRegister->exec($_POST))) {
             $this->services->flashes->addInfo('Your registration is success. Check your E-mail for confirmation.');
@@ -16,7 +16,7 @@ class UserController extends AbstractController
         $this->renderView('user/register', ['data' => $_POST, 'errors' => $errors ?? []]);
     }
 
-    public function confirmEmailAction()
+    protected function confirmEmailAction()
     {
         if($error = $this->models->usersConfirmEmailAndAuth->exec($this->request)) {
             $this->services->flashes->addError($error);
@@ -27,21 +27,25 @@ class UserController extends AbstractController
         }
     }
 
-    public function loginAction() : void
+    protected function loginAction() : void
     {
         if(isset($_POST['login']) && !($errors = $this->models->usersLogin->exec($_POST))) {
             $this->redirect($this->config['routes_for_roles'][Users::ROLE_USER]);
         }
 
-        $this->renderView('user/login', ['data' => $_POST, 'errors' => $errors ?? []]);
+        $this->renderView('user/login', [
+            'data' => $_POST,
+            'errors' => $errors ?? [],
+            'is_need_captcha' => $this->models->usersLogin->isNeedCaptcha()
+        ]);
     }
 
-    public function profileAction() : void
+    protected function profileAction() : void
     {
         $this->renderView('user/profile', ['user' => $this->models->users->getAuthorised()]);
     }
 
-    public function profileEditAction() : void
+    protected function profileEditAction() : void
     {
         if(isset($_POST['save']) && !($errors = $this->models->usersProfileEdit->exec($_POST))) {
             $this->redirect('/profile');
@@ -53,7 +57,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    public function passwordChangeAction() : void
+    protected function passwordChangeAction() : void
     {
         if(isset($_POST['save']) && !($errors = $this->models->usersPasswordChange->exec($_POST))) {
             $this->services->flashes->addInfo('Your password has been success changed');
@@ -63,7 +67,7 @@ class UserController extends AbstractController
         $this->renderView('user/password-change', ['data' => $_POST, 'errors' => $errors ?? []]);
     }
 
-    public function logoutAction()
+    protected function logoutAction()
     {
         if($this->models->users->logout()) {
             $this->redirect($this->config['routes_for_roles'][Users::ROLE_GUEST]);
@@ -73,7 +77,7 @@ class UserController extends AbstractController
         }
     }
 
-    public function captchaAction() : void
+    protected function captchaAction() : void
     {
         $this->services->captcha()->buildAndOutput();
         exit();

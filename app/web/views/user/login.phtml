@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 /** @var $data array */
 /** @var $errors array */
+/** @var $is_need_captcha bool */
 
 $this->layout('layout', ['title' => 'Login']);
 
@@ -29,6 +30,27 @@ $formFields = [
                     </div>
                 </div>
             <?php endforeach ?>
+
+            <?php if($is_need_captcha): ?>
+                <div class="form-group row">
+                    <label for="captcha" class="col-md-4 col-form-label">Enter Captcha</label>
+                    <div class="col-md-4">
+                        <input type="text" id="captcha" name="captcha" required
+                               class="form-control <?= isset($errors['captcha']) ? 'is-invalid' : '' ?>">
+                        <div class="<?= isset($errors['captcha']) ? 'invalid-feedback' : 'valid-feedback' ?>">
+                            <?= $this->e($errors['captcha'] ?? $correctMsg) ?>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="/captcha" class="captcha" id="captcha-img" alt="Captcha image">
+                        <small class="form-text text-muted">
+                            <a href="javascript:void(0);"
+                               onclick="document.getElementById('captcha-img').src='/captcha?r=' + new Date().getTime();"
+                            >Refresh</a>
+                        </small>
+                    </div>
+                </div>
+            <?php endif ?>
         </div>
         <div class="card-footer">
             <div class="row">

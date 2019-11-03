@@ -4,7 +4,7 @@ namespace app\models;
 
 class UsersLogin extends Users
 {
-    public $dbFields = [];
+    public $dbFields = ['last_auth_at', 'fail_auth_counter'];
 
     /** @var array */
     private $data;
@@ -20,9 +20,18 @@ class UsersLogin extends Users
         $this->data = $data;
         if($this->validate()) {
             $this->login($this->user);
+        } else {
+            $this->incrementFailAuth();
         }
 
         return $this->errors;
+    }
+
+    public function isNeedCaptcha() : bool
+    {
+        return $this->user ?
+            $this->user['fail_auth_counter'] > $this->config['max_fail_auth']
+            : false;
     }
 
     private function validate() : bool
@@ -50,11 +59,29 @@ class UsersLogin extends Users
             return false;
         }
 
+        if($this->isNeedCaptcha()) {
+            if(!$this->data['captcha']) {
+                $this->errors['captcha'] = 'Captcha is required';
+                return false;
+            } elseif(!$this->services->captcha()->validate($this->data['captcha'])) {
+                $this->errors['captcha'] = 'Captcha is not match';
+                return false;
+            }
+        }
+
         if(!$this->passwordVerify($this->data['password'], $this->user['password'])) {
             $this->errors['password'] = 'Password incorrect';
             return false;
         }
 
         return true;
+    }
+
+    private function incrementFailAuth() : void
+    {
+        if($this->user) {
+            $this->user['fail_auth_counter']++;
+            $this->update(['fail_auth_counter' => $this->user['fail_auth_counter']], $this->user['id']);
+        }
     }
 }

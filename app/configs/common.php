@@ -6,6 +6,8 @@ use \app\web\controllers\UserController;
 return [
     'sqlite_db_file' => __DIR__ . '/../../data/sii_test_task.sqlite3',
 
+    'max_fail_auth' => 15,
+
     'view_renderer' => [
         'views_dir' => __DIR__ . '/../web/views',
         'views_ext' => 'phtml',

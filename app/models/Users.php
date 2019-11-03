@@ -14,12 +14,16 @@ class Users extends AbstractModel
 
     public $dbTable = 'users';
     public $dbPk = 'id';
-    public $dbFields = ['id', 'login', 'email', 'password', 'full_name', 'registered_at', 'email_confirmed_at', 'last_auth_at'];
+    public $dbFields = ['id', 'login', 'email', 'password', 'full_name', 'registered_at',
+        'email_confirmed_at', 'last_auth_at', 'fail_auth_counter'];
 
     public function login(array $user) : void
     {
         $user['last_auth_at'] = date('Y-m-d H:i:s');
-        $this->update(['last_auth_at' => $user['last_auth_at']], $user['id']);
+        $this->update([
+            'last_auth_at' => $user['last_auth_at'],
+            'fail_auth_counter' => 0
+        ], $user['id']);
 
         $_SESSION[self::SESSION_NAME] = $user;
     }

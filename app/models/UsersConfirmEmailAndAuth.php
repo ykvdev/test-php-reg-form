@@ -4,7 +4,7 @@ namespace app\models;
 
 class UsersConfirmEmailAndAuth extends Users
 {
-    public $dbFields = ['email_confirmed_at'];
+    public $dbFields = ['email_confirmed_at', 'last_auth_at', 'fail_auth_counter'];
 
     /** @var array */
     private $data;
