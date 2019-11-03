@@ -27,4 +27,4 @@ $config = array_replace(
     require __DIR__ . '/../app/configs/envs/' . APP_ENV . '.php'
 );
 
-(new \app\web\Bootstrap($config))->run();
+(new \app\Bootstrap($config))->run();

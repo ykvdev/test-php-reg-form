@@ -1,17 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace app\web;
+namespace app;
 
 use app\models\Users;
-use app\services\Container;
-use app\web\actions\AbstractAction;
-use app\web\actions\StaticPageAction;
-use app\web\controllers\AbstractController;
-use app\web\controllers\PagesController;
-use app\web\controllers\UserController;
+use app\controllers\AbstractController;
+use app\controllers\PagesController;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use http\Client\Curl\User;
 use ParagonIE\AntiCSRF\AntiCSRF;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;

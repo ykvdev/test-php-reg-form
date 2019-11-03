@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace app\web\controllers;
+namespace app\controllers;
 
 use app\models\Users;
 use app\services\Container;

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 use \app\models\Users;
-use \app\web\controllers\UserController;
+use \app\controllers\UserController;
 
 return [
     'sqlite_db_file' => __DIR__ . '/../../data/sii_test_task.sqlite3',
@@ -13,7 +13,7 @@ return [
     'password_restore_token_ttl_hours' => 1,
 
     'view_renderer' => [
-        'views_dir' => __DIR__ . '/../web/views',
+        'views_dir' => __DIR__ . '/../views',
         'views_ext' => 'phtml',
     ],
 
