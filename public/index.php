@@ -6,7 +6,7 @@ if(in_array($_SERVER['REQUEST_URI'], [
     '/favicon.ico'
 ], true)) {
     $filePath = __DIR__ . $_SERVER['REQUEST_URI'];
-    $type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filePath);
+    $type = strstr($filePath, '.css') ? 'text/css' : 'image/x-icon';
     header('Content-Type: ' . $type);
     echo file_get_contents($filePath);
     exit;

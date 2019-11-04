@@ -146,7 +146,7 @@ class Users extends AbstractModel
 
         if(!$fullName) {
             $error = 'Full name is required';
-        } elseif(Validator::regex('/[^a-zа-я\' ]/i')->validate($fullName)) {
+        } elseif(Validator::regex('/[^a-zа-я\' ]/iu')->validate($fullName)) {
             $error = 'Full name may contains letters and symbol: \'';
         } elseif (!Validator::length(3, 100)->validate($fullName)) {
             $error = 'Full name length wrong, min: 3, max: 100 symbols';
