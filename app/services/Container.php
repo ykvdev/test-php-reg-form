@@ -2,10 +2,6 @@
 
 namespace app\services;
 
-use League\Plates\Engine;
-use League\Plates\Extension\Asset;
-use League\Plates\Extension\URI;
-use Nette\Mail\SmtpMailer;
 use ParagonIE\EasyDB\EasyDB;
 use ParagonIE\EasyDB\Factory;
 
@@ -24,7 +20,7 @@ class Container
     private $servicesLazy = [];
 
     /** @var array */
-    private $servicesObjects = [];
+    private $serviceObjects = [];
 
     public function __construct(array $config)
     {
@@ -33,49 +29,49 @@ class Container
         $this->servicesLazy['flashes'] = Flashes::class;
     }
 
-    public function __get($name)
+    public function __get(string $name) : object
     {
-        if (!isset($this->servicesObjects[$name])) {
-            $this->servicesObjects[$name] = new $this->servicesLazy[$name];
+        if (!isset($this->serviceObjects[$name])) {
+            $this->serviceObjects[$name] = new $this->servicesLazy[$name];
         }
 
-        return $this->servicesObjects[$name];
+        return $this->serviceObjects[$name];
     }
 
     public function viewRenderer() : ViewRenderer
     {
-        if (!isset($this->servicesObjects['viewRenderer'])) {
-            $this->servicesObjects['viewRenderer'] = new ViewRenderer($this->config['view_renderer']);
+        if (!isset($this->serviceObjects['viewRenderer'])) {
+            $this->serviceObjects['viewRenderer'] = new ViewRenderer($this->config['view_renderer']);
         }
 
-        return $this->servicesObjects['viewRenderer'];
+        return $this->serviceObjects['viewRenderer'];
     }
 
     public function db() : EasyDB
     {
-        if (!isset($this->servicesObjects['db'])) {
-            $this->servicesObjects['db'] = Factory::create('sqlite:' . $this->config['sqlite_db_file']);;
+        if (!isset($this->serviceObjects['db'])) {
+            $this->serviceObjects['db'] = Factory::create('sqlite:' . $this->config['sqlite_db_file']);;
         }
 
-        return $this->servicesObjects['db'];
+        return $this->serviceObjects['db'];
     }
 
     public function mailer() : Mailer
     {
-        if (!isset($this->servicesObjects['mailer'])) {
-            $this->servicesObjects['mailer'] = new Mailer($this->config['mailer'], $this);
+        if (!isset($this->serviceObjects['mailer'])) {
+            $this->serviceObjects['mailer'] = new Mailer($this->config['mailer'], $this);
         }
 
-        return $this->servicesObjects['mailer'];
+        return $this->serviceObjects['mailer'];
     }
 
     public function captcha() : Captcha
     {
-        if (!isset($this->servicesObjects['captcha'])) {
-            $this->servicesObjects['captcha'] = new Captcha($this->config['captcha']);
+        if (!isset($this->serviceObjects['captcha'])) {
+            $this->serviceObjects['captcha'] = new Captcha($this->config['captcha']);
         }
 
-        return $this->servicesObjects['captcha'];
+        return $this->serviceObjects['captcha'];
     }
 
     public function getBaseUrl() : string

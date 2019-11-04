@@ -27,7 +27,7 @@ class Container
     private $modelsLazy = [];
 
     /** @var array */
-    private $modelsObjects = [];
+    private $modelObjects = [];
 
     public function __construct(array $config, \app\services\Container $services)
     {
@@ -44,12 +44,12 @@ class Container
         $this->modelsLazy['usersPasswordChange'] = UsersPasswordChange::class;
     }
 
-    public function __get($name)
+    public function __get(string $name) : AbstractModel
     {
-        if (!isset($this->modelsObjects[$name])) {
-            $this->modelsObjects[$name] = new $this->modelsLazy[$name]($this->config, $this->services);
+        if (!isset($this->modelObjects[$name])) {
+            $this->modelObjects[$name] = new $this->modelsLazy[$name]($this->config, $this->services);
         }
 
-        return $this->modelsObjects[$name];
+        return $this->modelObjects[$name];
     }
 }

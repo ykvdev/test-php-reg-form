@@ -29,8 +29,8 @@ class UsersLogin extends Users
 
     public function isNeedCaptcha() : bool
     {
-        return $this->user ?
-            $this->user['fail_auth_counter'] > $this->config['max_fail_auth']
+        return $this->user
+            ? $this->user['fail_auth_counter'] > $this->config['user_max_fail_auth']
             : false;
     }
 
@@ -69,7 +69,7 @@ class UsersLogin extends Users
             }
         }
 
-        if(!$this->passwordVerify($this->data['password'], $this->user['password'])) {
+        if(!$this->validatePasswordHash($this->data['password'], $this->user['password'])) {
             $this->errors['password'] = 'Password incorrect';
             return false;
         }
@@ -80,8 +80,7 @@ class UsersLogin extends Users
     private function incrementFailAuth() : void
     {
         if($this->user) {
-            $this->user['fail_auth_counter']++;
-            $this->update(['fail_auth_counter' => $this->user['fail_auth_counter']], $this->user['id']);
+            $this->update(['fail_auth_counter' => ++$this->user['fail_auth_counter']], $this->user['id']);
         }
     }
 }

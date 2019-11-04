@@ -3,7 +3,6 @@
 namespace app\services;
 
 use League\Plates\Engine;
-use League\Plates\Extension\Asset;
 use League\Plates\Extension\URI;
 use ParagonIE\AntiCSRF\AntiCSRF;
 

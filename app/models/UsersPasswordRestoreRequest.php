@@ -73,7 +73,7 @@ class UsersPasswordRestoreRequest extends Users
             [
                 'full_name' => $this->user['full_name'],
                 'url' => $this->services->getBaseUrl() . '/password-restore/' . $this->user['pw_restore_token'],
-                'token_ttl' => $this->config['password_restore_token_ttl_hours']
+                'token_ttl' => $this->config['user_password_token_ttl_hours']
             ]
         );
     }

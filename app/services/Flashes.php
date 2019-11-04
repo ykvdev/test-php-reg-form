@@ -16,17 +16,4 @@ class Flashes
     {
         $_SESSION[self::ERROR] = $msg;
     }
-
-    public function getList() : array
-    {
-        $messages = [];
-        foreach ([self::INFO, self::ERROR] as $type) {
-            if(isset($type)) {
-                $messages[$type] = $_SESSION[$type];
-                unset($_SESSION[$type]);
-            }
-        }
-
-        return $messages;
-    }
 }

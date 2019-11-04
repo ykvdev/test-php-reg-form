@@ -24,7 +24,7 @@ class UsersPasswordChange extends Users
 
     private function validate() : bool
     {
-        if(!$this->passwordVerify($this->data['curr_password'], (string)$this->getAuthorised('password'))) {
+        if(!$this->validatePasswordHash($this->data['curr_password'], (string)$this->getAuthorised('password'))) {
             $this->errors['curr_password'] = 'Current password incorrect';
         }
 
@@ -40,17 +40,19 @@ class UsersPasswordChange extends Users
             $this->errors['repassword'] = 'Passwords is not match';
         }
 
-        return empty($this->errors);
+        return !$this->errors;
     }
 
     private function changePassword() : void
     {
         $old = $this->getAuthorised();
         $new = $this->filterFieldsList($this->data);
-        $new['password'] = $this->passwordHash($new['password']);
+        $new['password'] = $this->makePasswordHash($new['password']);
         $changes = array_diff($new, $old);
 
-        $this->update($changes, $this->getAuthorised('id'));
-        $this->updateAuthorised($changes);
+        if($changes) {
+            $this->update($changes, $this->getAuthorised('id'));
+            $this->updateAuthorised($changes);
+        }
     }
 }

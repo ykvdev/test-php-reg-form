@@ -28,7 +28,7 @@ class UsersProfileEdit extends Users
             $this->errors['full_name'] = $error;
         }
 
-        return empty($this->errors);
+        return !$this->errors;
     }
 
     private function save() : void
@@ -37,7 +37,9 @@ class UsersProfileEdit extends Users
         $new = $this->filterFieldsList($this->data);
         $changes = array_diff($new, $old);
 
-        $this->update($changes, $this->getAuthorised('id'));
-        $this->updateAuthorised($changes);
+        if($changes) {
+            $this->update($changes, $this->getAuthorised('id'));
+            $this->updateAuthorised($changes);
+        }
     }
 }

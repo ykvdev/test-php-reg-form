@@ -63,12 +63,12 @@ class UsersRegister extends Users
             $this->errors['captcha'] = 'Captcha is not match';
         }
 
-        return empty($this->errors);
+        return !$this->errors;
     }
     
     private function save() : void
     {
-        $this->data['password'] = $this->passwordHash($this->data['password']);
+        $this->data['password'] = $this->makePasswordHash($this->data['password']);
         $this->data['registered_at'] = date('Y-m-d H:i:s');
         $this->insert($this->data);
     }

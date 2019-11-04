@@ -5,9 +5,10 @@ if(in_array($_SERVER['REQUEST_URI'], [
     '/assets/css/common.css',
     '/favicon.ico'
 ], true)) {
-    header("Content-Type: text/css");
-    header("X-Content-Type-Options: nosniff");
-    echo file_get_contents(__DIR__ . $_SERVER['REQUEST_URI']);
+    $filePath = __DIR__ . $_SERVER['REQUEST_URI'];
+    $type = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $filePath);
+    header('Content-Type: ' . $type);
+    echo file_get_contents($filePath);
     exit;
 }
 // ---------------------------------------------------------------------

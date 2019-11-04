@@ -63,7 +63,7 @@ class AbstractModel
      *
      * @return array
      */
-    public function getRows(array $conditions = [], $selectFields = '*', $limit = null, $offset = null) : array
+    public function getRows(array $conditions = [], $selectFields = '*', ?int $limit = null, ?int $offset = null) : array
     {
         $selectFields = is_array($selectFields) ? '`' . implode('`, `', $selectFields) . '`' : $selectFields;
 

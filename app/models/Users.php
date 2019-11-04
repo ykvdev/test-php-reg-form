@@ -11,8 +11,6 @@ class Users extends AbstractModel
     public const ROLE_GUEST = 'guest';
     public const ROLE_USER = 'user';
 
-    private const SESSION_NAME = 'user';
-
     public $dbTable = 'users';
     public $dbPk = 'id';
     public $dbFields = ['id', 'login', 'email', 'password', 'full_name', 'registered_at', 'email_confirmed_at',
@@ -28,7 +26,7 @@ class Users extends AbstractModel
             'pw_token_sent_at' => null
         ], $user['id']);
 
-        $_SESSION[self::SESSION_NAME] = array_merge($user, [
+        $_SESSION[$this->config['user_session_name']] = array_merge($user, [
             'browser' => $_SERVER['HTTP_USER_AGENT'] ?? null,
             'ip' => $this->services->getClientIp()
         ]);
@@ -41,8 +39,8 @@ class Users extends AbstractModel
      */
     public function getAuthorised(string $field = null)
     {
-        $data = $_SESSION[self::SESSION_NAME] ?? null;
-        $data = $data ? ($field && isset($data[$field]) ? $data[$field] : $data) : null;
+        $data = $_SESSION[$this->config['user_session_name']] ?? null;
+        $data = $data ? ($field ? $data[$field] : $data) : null;
 
         return $data;
     }
@@ -57,7 +55,8 @@ class Users extends AbstractModel
     public function updateAuthorised(array $changes) : void
     {
         if($this->getAuthorised()) {
-            $_SESSION[self::SESSION_NAME] = array_replace($_SESSION[self::SESSION_NAME], $changes);
+            $_SESSION[$this->config['user_session_name']] =
+                array_replace($_SESSION[$this->config['user_session_name']], $changes);
         } else {
             throw new \RuntimeException('User not authorized');
         }
@@ -68,12 +67,12 @@ class Users extends AbstractModel
         return session_destroy();
     }
 
-    public function passwordHash(string $plainPassword) : string
+    public function makePasswordHash(string $plainPassword) : string
     {
         return password_hash($plainPassword, PASSWORD_DEFAULT);
     }
 
-    public function passwordVerify(string $plainPassword, string $hashedPassword) : bool
+    public function validatePasswordHash(string $plainPassword, string $hashedPassword) : bool
     {
         return password_verify($plainPassword, $hashedPassword);
     }
@@ -134,7 +133,7 @@ class Users extends AbstractModel
                 ->setMinLength(6)
                 ->setMaxLength(20);
             if(!$verifier->checkPassword($password)) {
-                $error = 'Password should be min: 6, max: 100, contains: letters, capitals and numbers';
+                $error = 'Password should be min: 6, max: 20, contains: letters, capitals and numbers';
             }
         }
 

@@ -19,7 +19,7 @@ class UsersConfirmEmail extends Users
     {
         $this->data = $data;
         if($this->validate()) {
-            $this->activate();
+            $this->setConfirmed();
             $this->login($this->user);
         }
 
@@ -43,10 +43,8 @@ class UsersConfirmEmail extends Users
             return false;
         }
 
-        if(strcmp(
-            $this->makeEmailConfirmToken($this->data['email'], $this->user['registered_at']),
-            $this->data['token'] ?? null) !== 0
-        ) {
+        if(strcmp($this->makeEmailConfirmToken($this->data['email'], $this->user['registered_at']),
+        $this->data['token'] ?? null) !== 0) {
             $this->error = 'E-mail confirmation token incorrect';
             return false;
         }
@@ -54,7 +52,7 @@ class UsersConfirmEmail extends Users
         return true;
     }
 
-    private function activate() : void
+    private function setConfirmed() : void
     {
         $this->update(['email_confirmed_at' => date('Y-m-d H:i:s')], $this->user['id']);
     }

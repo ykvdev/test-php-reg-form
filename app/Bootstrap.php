@@ -56,8 +56,7 @@ class Bootstrap
         try {
             $dispatcher = cachedDispatcher(function(RouteCollector $r) {
                 foreach ($this->config['routes'] as $routeParts) {
-                    [$method, $route, $controller, $action] = $routeParts;
-                    $role = $routeParts[4] ?? null;
+                    [$method, $route, $controller, $action, $role] = $routeParts;
                     $r->addRoute($method, $route, [$controller, $action, $role]);
                 }
             }, [
@@ -65,10 +64,10 @@ class Bootstrap
                 'cacheDisabled' => APP_ENV == ENV_DEV,
             ]);
 
-            $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $this->prepareUri());
+            $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $this->prepareRequestUri());
             $result = $routeInfo[0];
             $handler = $routeInfo[1] ?? null;
-            $requestParams = $routeInfo[2] ?? null;
+            $requestParams = $routeInfo[2] ?? [];
             switch ($result) {
                 case Dispatcher::NOT_FOUND:
                     $this->invokeAction(PagesController::class, 'error404');
@@ -97,7 +96,7 @@ class Bootstrap
      *
      * @return string
      */
-    private function prepareUri() : string
+    private function prepareRequestUri() : string
     {
         $uri = $_SERVER['REQUEST_URI'];
         if (false !== $pos = strpos($uri, '?')) {
@@ -108,10 +107,11 @@ class Bootstrap
         return $uri;
     }
 
-    private function invokeAction(string $controllerClassName, string $action, string $role = Users::ROLE_ALL, array $request = []) : void
+    private function invokeAction(string $controllerClassName, string $action,
+    string $role = Users::ROLE_ALL, array $requestParams = []) : void
     {
         /** @var AbstractController $controller */
-        $controller = new $controllerClassName($this->config, $request);
+        $controller = new $controllerClassName($this->config, $requestParams);
         $controller->runAction($action, $role);
     }
 }

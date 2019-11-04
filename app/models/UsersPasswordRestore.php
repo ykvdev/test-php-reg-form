@@ -27,7 +27,7 @@ class UsersPasswordRestore extends Users
         }
 
         $tokenHours = (new \DateTime())->diff(new \DateTime($this->user['pw_token_sent_at']))->h;
-        if ($tokenHours > $this->config['password_restore_token_ttl_hours']) {
+        if ($tokenHours > $this->config['user_password_token_ttl_hours']) {
             return 'Token is expired, you may send new again';
         }
 
@@ -64,6 +64,6 @@ class UsersPasswordRestore extends Users
 
     private function changePassword() : void
     {
-        $this->update(['password' => $this->passwordHash($this->data['password'])], $this->user['id']);
+        $this->update(['password' => $this->makePasswordHash($this->data['password'])], $this->user['id']);
     }
 }
