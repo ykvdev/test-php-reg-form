@@ -1,27 +1,35 @@
-php -S 0.0.0.0:8000 -t public ./public/index.php
+## Доделки
 
-# FastRoute
+actions/...
+
+entity/User ?
+
+дату в БД при записи передавать как date_create(), а при сохранении она должна пропарсиваться автоматом в нужный строковый формат
+
+доб в условия для методов БД int|array|EasyStatement
+
+## FastRoute
 
 https://github.com/nikic/FastRoute
 
-# Whoops
+## Whoops
 
 http://filp.github.io/whoops/
 
-# DB
+## DB
 
 https://github.com/paragonie/easydb
 
 ? https://doc.nette.org/en/3.0/database-core
 ? https://doc.nette.org/en/3.0/database-explorer
 
-# Mailer
+## Mailer
 
 https://doc.nette.org/en/3.0/mailing
 
 Temp mails service: https://temp-mail.org/ru/
 
-# CSRF
+## CSRF
 
 https://github.com/paragonie/anti-csrf
 
@@ -43,16 +51,16 @@ if($_POST && (new AntiCSRF())->validateRequest()) {
 
 ? https://doc.nette.org/en/3.0/forms
 
-# Input validation
+## Input validation
 
 https://respect-validation.readthedocs.io/en/1.1/concrete-api/
 https://github.com/acurrieclark/php-password-verifier
 
-# Captcha
+## Captcha
 
 https://github.com/Gregwar/Captcha
 
-# Plates
+## Plates
 
 http://platesphp.com/v3/
 
