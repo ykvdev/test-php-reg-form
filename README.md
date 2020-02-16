@@ -2,7 +2,7 @@
 
 ## Install
 
-1. `git clone https://bitbucket.org/atoumus/test_skysilk.git && cd ./test_skysilk`
+1. `git clone https://bitbucket.org/atoumus/test_skysilk_reg_form.git && cd ./test_skysilk_reg_form`
 1. `composer install`
 1. `cp ./sii_test_task.clear.sqlite3 ./data/sii_test_task.sqlite3`
 1. Run as dev env: `php -S 0.0.0.0:8000 -t public ./public/index.php` - errors will showing
